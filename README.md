@@ -1,7 +1,7 @@
 # Sistema de Aprendizaje en Línea con IA
 
 **Asignatura:** Ingeniería de Software II  
-**Profesor:** Julián Prado (`jprado399@uan.edu.co`)
+**Profesor:** Julián Prado (`jprado399@uan.edu.co`)  
 **Universidad:** Universidad Antonio Nariño – Sede Sur, Bogotá  
 **Periodo:** 2026-2  
 
