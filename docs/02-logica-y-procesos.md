@@ -11,6 +11,7 @@ La plataforma trabaja a la par con la clase presencial. El profesor dicta su tem
 
 ## 2. Flujo Principal de Procesos (El Ciclo de Aprendizaje)
 
+```mermaid
 sequenceDiagram
     autonumber
     actor Docente
@@ -42,7 +43,8 @@ sequenceDiagram
 
     Server->>DB: 15. Actualiza mapa de calor del grupo
     Docente->>UI: 16. Consulta analiticas para la siguiente clase
-    
+```
+
 ---
 
 ## 3. Módulos y Funciones del Sistema
