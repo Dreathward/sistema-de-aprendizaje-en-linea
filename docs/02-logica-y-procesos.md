@@ -17,7 +17,7 @@ sequenceDiagram
     actor Docente
     actor Estudiante
     participant UI as Cliente Web (Frontend)
-    participant Server as Backend (Node.js/Express)
+    participant Server as Backend (Python/FastAPI)
     participant IA as Google Gemini API
     participant DB as Supabase (PostgreSQL)
 
