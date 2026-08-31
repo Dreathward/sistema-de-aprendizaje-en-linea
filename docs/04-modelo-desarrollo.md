@@ -17,7 +17,7 @@ Para la construcción de la plataforma se adopta el **Modelo Incremental e Itera
 
 ---
 
-## 2. Marco de Trabajo: Scrum Adaptado (Gestión por Cortes)
+## 2. Marco de Trabajo
 
 El framework Scrum se adapta para alinear el ritmo de trabajo interno con la estructura del calendario académico de la institución.
 
