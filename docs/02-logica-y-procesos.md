@@ -1,4 +1,4 @@
-# Lógica del Proyecto y Procesos Principales
+# Lógica y Procesos Principales del Proyecto
 
 ## 1. Propósito e Intención General
 El Sistema de Aprendizaje en Línea con IA Adaptativa se plantea como una herramienta de apoyo y refuerzo para estudiantes de educación básica y media, abarcando desde grado sexto hasta once. 
