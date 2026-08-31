@@ -7,13 +7,13 @@
 
 ---
 
-## 1. Justificación del Modelo de Desarrollo
+## 1. Justificación
 
-Para la construcción de la plataforma se adopta el **Modelo de Ciclo de Vida Incremental e Iterativo**, soportado operativamente por el marco de trabajo ágil **Scrum (Adaptado para MVP)**.
+Para la construcción de la plataforma se adopta el **Modelo Incremental e Iterativo**, soportado operativamente por el marco de trabajo ágil **Scrum (Adaptado para MVP)**.
 
 ### Definición del Modelo
-* **Enfoque Incremental (Construcción por piezas):** El sistema no se desarrolla de forma monolítica al final del semestre. Se divide en módulos funcionales que añaden valor operativo de manera progresiva (Base de datos y Autenticación -> Motor de Cuestionarios -> Integración con IA Gemini -> Analíticas de Rendimiento).
-* **Enfoque Iterativo (Refinamiento continuo):** Dado que las evaluaciones oficiales ocurren al cierre de cada uno de los 4 cortes evaluativos, el equipo realiza iteraciones de revisión interna durante las semanas de desarrollo para probar, ajustar y pulir la calidad de las interfaces, lógica de negocio y respuesta de la IA antes de consolidar la entrega oficial.
+* **Enfoque Incremental:** El sistema no se desarrolla de forma monolítica al final del semestre. Se divide en módulos funcionales que añaden valor operativo de manera progresiva (Base de datos y Autenticación -> Motor de Cuestionarios -> Integración con IA Gemini -> Analíticas de Rendimiento).
+* **Enfoque Iterativo:** Dado que las evaluaciones oficiales ocurren al cierre de cada uno de los 4 cortes evaluativos, el equipo realiza iteraciones de revisión interna durante las semanas de desarrollo para probar, ajustar y pulir la calidad de las interfaces, lógica de negocio y respuesta de la IA antes de consolidar la entrega oficial.
 
 ---
 
