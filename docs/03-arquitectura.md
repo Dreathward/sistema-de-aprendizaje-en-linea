@@ -1,6 +1,6 @@
-# Descripción y Evidencias de la Arquitectura de Software
+# Descripción de la Arquitectura de Software
 
-## 1. Estilo Arquitectónico: Monolito Modular (*Modular Monolith*)
+## 1. Estilo Arquitectónico: Monolito Modular
 
 Para el diseño y construcción de la plataforma se seleccionó el estilo arquitectónico de **Monolito Modular**. Esta decisión responde a la necesidad de mantener un sistema altamente mantenible, desacoplado y fácil de desplegar, evitando la sobreingeniería y complejidad operativa que representan los microservicios en etapas tempranas.
 
@@ -57,7 +57,7 @@ graph TD
 Gestiona la identidad de los usuarios, diferenciando los permisos y vistas entre el rol de **Docente** y el rol de **Estudiante**. Se integra directamente con el servicio de seguridad de Supabase Auth para el manejo de sesiones mediante tokens seguros.
 
 ### Módulo de Cursos y Secciones
-Resuelve la variabilidad del entorno escolar permitiendo la administración independiente de aulas (ej. 6-1, 6-2). Permite la clonación de talleres entre secciones y el control de disponibilidad de las actividades según el avance real de cada grupo.
+Resuelve la variabilidad del entorno escolar permitiendo la administración independiente de aulas. Permite la clonación de talleres entre secciones y el control de disponibilidad de las actividades según el avance real de cada grupo.
 
 ### Módulo de Evaluación y Cuestionarios
 Encargado de la estructura de las evaluaciones, el registro de opciones de respuesta y la calificación automática en el servidor al momento en que un alumno envía su intento.
