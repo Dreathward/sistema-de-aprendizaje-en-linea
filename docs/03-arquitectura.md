@@ -1,6 +1,6 @@
-# Descripción de la Arquitectura de Software
+# Descripción de la Arquitectura
 
-## 1. Estilo Arquitectónico: Monolito Modular
+## 1. Estilo Arquitectónico
 
 Para el diseño y construcción de la plataforma se seleccionó el estilo arquitectónico de **Monolito Modular**. Esta decisión responde a la necesidad de mantener un sistema altamente mantenible, desacoplado y fácil de desplegar, evitando la sobreingeniería y complejidad operativa que representan los microservicios en etapas tempranas.
 
