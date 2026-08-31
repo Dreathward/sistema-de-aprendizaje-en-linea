@@ -34,7 +34,7 @@ El framework Scrum se adapta para alinear el ritmo de trabajo interno con la est
 
 ---
 
-## 3. Planificación por Cortes y Sprints
+## 3. Planificación
 
 El desarrollo del proyecto se estructura en **7 Sprints distribuidos a lo largo de los 4 Cortes evaluativos del semestre**:
 
