@@ -13,17 +13,17 @@ A diferencia de un monolito convencional de capas planas, la aplicación organiz
 ```mermaid
 graph TD
     subgraph Cliente ["Capa de Presentación (Frontend)"]
-        UI["Interfaz Web (React / HTML5)"]
+        UI["Interfaz Web (HTML5 / CSS3 / JavaScript)"]
     end
 
-    subgraph Backend ["Servidor Principal (Monolito Modular Node.js/Express)"]
+    subgraph Backend ["Servidor Principal (Monolito Modular en Python / FastAPI)"]
         Router["Enrutador de Peticiones HTTP/REST"]
         
         subgraph Modulos ["Módulos de Dominio (Desacoplados)"]
             ModAuth["Módulo de Autenticación y Roles"]
             ModCursos["Módulo de Gestión de Cursos y Secciones"]
             ModEval["Módulo de Evaluación y Banco de Preguntas"]
-            ModIA["Módulo de Integración con IA (Orquestador Gemini)"]
+            ModIA["Módulo de Integración con IA (Orquestador Gemini en Python)"]
             ModStats["Módulo de Analíticas y Reportes"]
         end
     end
@@ -63,7 +63,7 @@ Resuelve la variabilidad del entorno escolar permitiendo la administración inde
 Encargado de la estructura de las evaluaciones, el registro de opciones de respuesta y la calificación automática en el servidor al momento en que un alumno envía su intento.
 
 ### Módulo Adaptativo de IA (Orquestador de Prompts)
-Actúa como la capa de inteligencia del sistema. Cuando el módulo de evaluación detecta fallas conceptuales en la entrega de un estudiante, este módulo empaqueta el contexto académico (grado, tema y tipo de error) y consulta la API de Google Gemini para obtener una tutoría explicativa. Implementa un mecanismo de almacenamiento en caché en la base de datos para reutilizar explicaciones frente a errores idénticos.
+Actúa como la capa de inteligencia del sistema construida en Python. Cuando el módulo de evaluación detecta fallas conceptuales en la entrega de un estudiante, este módulo empaqueta el contexto académico (grado, tema y tipo de error) y consulta la API de Google Gemini para obtener una tutoría explicativa. Implementa un mecanismo de almacenamiento en caché en la base de datos para reutilizar explicaciones frente a errores idénticos.
 
 ### Módulo de Analíticas
 Agrupa y procesa las calificaciones e intentos de los estudiantes para construir visualizaciones consolidadas ("mapas de calor") que sirven como insumo diagnóstico para el docente en su aula presencial.
@@ -72,7 +72,7 @@ Agrupa y procesa las calificaciones e intentos de los estudiantes para construir
 
 ## 4. Componentes Tecnológicos e Infraestructura
 
-* **Frontend:** Cliente web receptivo e interactivo, optimizado para bajo consumo de datos en redes escolares.
-* **Backend:** Entorno de ejecución Node.js con Express, estructurado bajo el patrón de carpetas por módulo (`src/modules/...`).
+* **Frontend:** Cliente web interactivo basado en HTML5, CSS3 y JavaScript, optimizado para bajo consumo de datos en redes escolares.
+* **Backend:** Servidor en **Python** estructurado con el framework **FastAPI**, organizado bajo el patrón de carpetas por módulo (`src/modules/...`).
 * **Base de Datos y Persistencia:** Supabase (PostgreSQL relacional) con esquemas definidos para el almacenamiento de usuarios, secciones, cuestionarios, intentos y respuestas de caché.
-* **Proveedor de IA:** Google Gemini API (modelo Gemini 1.5 Flash) seleccionado por su baja latencia y alta precisión en la generación de texto pedagógico.
+* **Proveedor de IA:** Google Gemini API (modelo Gemini 1.5 Flash integrado mediante la librería oficial `google-genai` en Python), seleccionado por su baja latencia y alta precisión pedagógica.
