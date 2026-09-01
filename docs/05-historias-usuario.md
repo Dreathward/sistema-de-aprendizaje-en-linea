@@ -20,7 +20,7 @@
 
 ### HU02 - Ingreso Simplificado de Estudiantes
 * **Como** estudiante de grado 9-3,
-* **Quiero** ingresar a la plataforma ingresando mi documento de identidad y un código de clase proporcionado por mi profesor,
+* **Quiero** ingresar a la plataforma ingresando con mi código de estudiante y clase proporcionado por mi profesor,
 * **Para** acceder rápidamente a mis talleres asignados sin recordar contraseñas complejas.
 * **Criterios de Aceptación:**
   1. El estudiante no requiere registro de correo electrónico para acceder.
