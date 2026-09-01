@@ -21,28 +21,28 @@ sequenceDiagram
     participant IA as Google Gemini API
     participant DB as Supabase (PostgreSQL)
 
-    Docente->>UI: 1. Selecciona tema y seccion (ej. 6-1)
-    UI->>IA: 2. Solicita borrador de cuestionario
-    IA-->>UI: 3. Retorna propuesta de preguntas
-    Docente->>UI: 4. Revisa, aprueba y publica el taller
-    UI->>DB: 5. Almacena taller asociado a la seccion
+    Docente->>UI: Selecciona tema y seccion (ej. 6-1)
+    UI->>IA: Solicita borrador de cuestionario
+    IA-->>UI: Retorna propuesta de preguntas
+    Docente->>UI: Revisa, aprueba y publica el taller
+    UI->>DB: Almacena taller asociado a la seccion
     
-    Estudiante->>UI: 6. Resuelve el cuestionario desde casa
-    UI->>Server: 7. Envia respuestas del estudiante
-    Server->>Server: 8. Evalua respuestas e identifica errores
+    Estudiante->>UI: Resuelve el cuestionario desde casa
+    UI->>Server: Envia respuestas del estudiante
+    Server->>Server: Evalua respuestas e identifica errores
     
     alt Si el estudiante presenta vacios conceptuales
-        Server->>IA: 9. Envia prompt con fallas + grado del alumno
-        IA-->>Server: 10. Genera tutoria de refuerzo personalizada
-        Server->>DB: 11. Guarda historial y cache de tutoria
-        Server-->>UI: 12. Despliega retroalimentacion pedagógica
+        Server->>IA: Envia prompt con fallas + grado del alumno
+        IA-->>Server: Genera tutoria de refuerzo personalizada
+        Server->>DB: Guarda historial y cache de tutoria
+        Server-->>UI: Despliega retroalimentacion pedagogica
     else Si aprueba sin fallas
-        Server->>DB: 13. Registra avance positivo
-        Server-->>UI: 14. Confirma dominio del tema
+        Server->>DB: Registra avance positivo
+        Server-->>UI: Confirma dominio del tema
     end
 
-    Server->>DB: 15. Actualiza mapa de calor del grupo
-    Docente->>UI: 16. Consulta analiticas para la siguiente clase
+    Server->>DB: Actualiza mapa de calor del grupo
+    Docente->>UI: Consulta analiticas para la siguiente clase
 ```
 
 ---
