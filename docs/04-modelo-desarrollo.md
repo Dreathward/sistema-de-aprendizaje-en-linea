@@ -17,7 +17,7 @@ Para la construcción de la plataforma se adopta el **Modelo Incremental e Itera
 Scrum se adapta para alinear el trabajo interno con las entregas de los cuatro cortes académicos.
 
 ### 2.1 Roles del Equipo
-* **Product Owner:** Prof. Julián Prado.
+* **Product Owner:** Julián Prado.
 * **Scrum Master & Lead Frontend:** Jhon Alexander Pérez Llerena.
 * **Core Backend & IA Engineers:** Jeison Steven Niño Rojas y Samuel Thomas Monroy Pérez.
 * **Database & Infrastructure Lead:** Andrés Felipe Páez Díaz.
