@@ -1,11 +1,12 @@
 # Lógica y Procesos Principales del Proyecto
 
 ## 1. Propósito e Intención General
-El Sistema de Aprendizaje en Línea con IA Adaptativa se plantea como una herramienta de apoyo y refuerzo para estudiantes de educación básica y media, abarcando desde grado sexto hasta once. 
 
-Para entender su enfoque, es importante diferenciarlo de plataformas institucionales como Moodle. Mientras que Moodle administra contenidos académicos y registra las notas oficiales, este proyecto funciona como un entorno de tutoría formativa. Su meta no es asignar un número o castigar el error, sino identificar en tiempo real en qué parte del tema se confundió el estudiante y entregarle una explicación inmediata para corregir esa falla.
+La Plataforma de Entrenamiento Adaptativo y Diagnóstico por Competencias se concibe como un entorno digital especializado en la preparación autónoma e institucional para pruebas de estado de educación básica secundaria y educación media. A diferencia de los gestores de aprendizaje tradicionales o repositorios estáticos de talleres, la plataforma no busca asignar calificaciones sumativas sobre temas escolares individuales ni entregar respuestas automatizadas para tareas. Su valor central radica en actuar como un motor de diagnóstico continuo y entrenamiento adaptativo basado estrictamente en la matriz de competencias del ICFES, abarcando Lectura Crítica, Razonamiento Cuantitativo, Competencias Ciudadanas, Ciencias Naturales e Inglés.
 
-La plataforma trabaja a la par con la clase presencial. El profesor dicta su tema en el salón, habilita los talleres de refuerzo en la aplicación y revisa los reportes de desempeño para saber qué puntos debe volver a explicar en el tablero la siguiente semana.
+El enfoque pedagógico se centra en el entrenamiento mediante la lógica de descarte. El sistema evalúa la elección del estudiante no solo como correcta o incorrecta, sino analizando los distractores seleccionados para enseñarle la estructura del razonamiento a través de la API de IA. De este modo, la herramienta no resuelve el ejercicio por el usuario, sino que desarma la pregunta para exponer por qué una opción parece válida y cómo identificar las pistas clave del enunciado, transformando la revisión del error en una sesión de entrenamiento estratégico.
+
+Esta dinámica fomenta la autonomía del estudiante, quien puede medir su desempeño por niveles de avance, al tiempo que provee al cuerpo docente y directivo mapas de calor sobre las competencias institucionales en las que los grupos presentan mayor índice de falla. En lugar de recargar al profesor con la calificación manual de talleres o la creación masiva de guías, la plataforma sirve como un termómetro previo a la prueba presencial, guiando las intervenciones de refuerzo del docente en el aula a partir de métricas concretas y consolidadas.
 
 ---
 
