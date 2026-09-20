@@ -76,8 +76,10 @@ El servidor en FastAPI actúa como el núcleo lógico del sistema, encargado de 
 
 ---
 
-## 4. Adaptación al Entorno Escolar Real
+## 4. Adaptación al Entorno Escolar Real y Gestión de Limitaciones
 
-Las dinámicas de un colegio varían constantemente por festivos, actividades o ritmos de aprendizaje distintos entre salones. La plataforma resuelve este problema permitiendo publicar o desfasar las fechas de los talleres por cada sección sin alterar el historial general del grado.
+La implementación de plataformas tecnológicas en instituciones de educación básica y media enfrenta desafíos operativos concretos, como la inestabilidad en las conexiones a Internet, los intentos de consulta externa durante las evaluaciones y los costos de latencia en servicios de inteligencia artificial. La arquitectura del sistema integra decisiones de diseño orientadas a mitigar estos escenarios sin comprometer la experiencia de usuario ni la integridad del proceso formativo.
 
-Frente a la estabilidad de las conexiones a internet en las instituciones, la aplicación intercambia datos mediante formatos livianos en JSON. En caso de experimentar caídas momentáneas en la red, la interfaz almacena las respuestas del usuario de forma local hasta que el servidor confirme la recepción completa del taller.
+Frente a las fluctuaciones de red en las aulas, la aplicación utiliza intercambios de datos en formatos livianos mediante solicitudes asíncronas en JSON. Durante la ejecución de un simulacro o entrenamiento, las respuestas marcadas por el estudiante se conservan temporalmente en el almacenamiento local del navegador (LocalStorage/IndexedDB). En caso de caídas momentáneas en la conectividad, el cliente web reintenta el envío de fondo tan pronto como la red se restablece, previniendo la pérdida de progreso y sentando las bases para una futura integración bajo el estándar PWA (Progressive Web App).
+
+Respecto al control de la integridad en la prueba, la plataforma reconoce la naturaleza de la evaluación formativa y la autonomía del estudiante en su preparación para exámenes estatales. Para minimizar la copia directa o la consulta en herramientas externas durante los simulacros, el backend implementa mecanismos de aleatorización de preguntas u opciones desde el banco de datos, limites de tiempo por componente y restricciones en el cliente web sobre la selección o copiado de enunciados. Asimismo, el uso de la API de Google Gemini se optimiza mediante una estrategia de caché en Supabase, la cual evita llamadas redundantes al servidor de IA para errores comunes ya procesados, reduciendo los tiempos de respuesta a milisegundos y garantizando la sostenibilidad operativa del sistema.
