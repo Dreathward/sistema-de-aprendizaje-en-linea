@@ -4,11 +4,11 @@
 
 ## 1. Justificación
 
-Para la construcción de la plataforma se adopta el **Modelo Incremental e Iterativo**, soportado por el marco de trabajo **Scrum Adaptado**.
+Para la construcción de la plataforma se adopta el **Modelo Incremental e Iterativo**, soportado operativamente por un marco de trabajo **Scrum Adaptado**. Esta combinación metodológica permite abordar la complejidad del software dividiendo el proyecto en entregables funcionales de valor inmediato, al tiempo que facilita la incorporación continua de retroalimentación pedagógica y técnica sin interrumpir el avance general del desarrollo.
 
-### Definición del Modelo
-* **Enfoque Incremental:** El sistema se divide en módulos funcionales que añaden valor de forma progresiva: Autenticación, Motor de Cuestionarios, Integración con IA Gemini y Analíticas de Rendimiento.
-* **Enfoque Iterativo:** El equipo realiza iteraciones de revisión interna durante las semanas de desarrollo para probar, ajustar y pulir las interfaces, la lógica y las respuestas de la IA antes de cada entrega oficial.
+El **enfoque incremental** estructura la construcción del sistema en módulos independientes que se añaden de forma progresiva a la arquitectura. La plataforma evoluciona a través de la integración de capas clave: la gestión de autenticación y perfiles, el catálogo estructurado de competencias del ICFES, el motor de evaluación para los modos de Entrenamiento Libre y Simulacro Real, el orquestador de tutorías por lógica de descarte con la API de Google Gemini y, finalmente, el módulo de analíticas e historial institucional. Cada incremento entrega una versión utilizable que amplía la funcionalidad del producto.
+
+Por su parte, el **enfoque iterativo** garantiza la revisión y perfeccionamiento constante de los componentes construidos. A lo largo de los ciclos de trabajo, el equipo prueba, ajusta y pule la fluidez de las interfaces de usuario, la precisión en los tiempos de respuesta del backend en FastAPI, la calidad pedagógica de las explicaciones generadas por la inteligencia artificial y la estabilidad de las conexiones con Supabase. Esta dinámica iterativa asegura que cada funcionalidad no solo se despliegue, sino que se optimice técnicamente antes de su validación final.
 
 ---
 
