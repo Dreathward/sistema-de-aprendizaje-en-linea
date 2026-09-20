@@ -14,7 +14,7 @@ Por su parte, el **enfoque iterativo** garantiza la revisión y perfeccionamient
 
 ## 2. Marco de Trabajo
 
-Scrum se adapta para alinear el trabajo interno con las entregas de los cuatro cortes académicos.
+El marco de trabajo Scrum se adapta para alinear la dinámica interna del equipo de desarrollo con las entregas formales programadas a lo largo de los cortes académicos de la universidad.
 
 ### 2.1 Roles del Equipo
 * **Product Owner:** Julián Prado.
@@ -23,9 +23,9 @@ Scrum se adapta para alinear el trabajo interno con las entregas de los cuatro c
 * **Database & Infrastructure Lead:** Andrés Felipe Páez Díaz.
 
 ### 2.2 Artefactos del Sistema
-* **Product Backlog:** Listado general de historias de usuario en `/docs/05-historias-usuario.md`.
-* **Sprint Backlog:** Tareas priorizadas asignadas para cada ciclo de 2 a 3 semanas.
-* **Incremento Entregable:** Versión ejecutable de software o documentación presentada al cierre de cada corte.
+* **Product Backlog:** Listado general de historias de usuario y requerimientos técnicos consignados en `/docs/05-historias-usuario.md`, priorizados según la arquitectura por competencias del ICFES.
+* **Sprint Backlog:** Conjunto de tareas específicas e historias de usuario seleccionadas por el equipo para ser desarrolladas dentro de un ciclo de trabajo determinado (2 a 3 semanas).
+* **Incremento Entregable:** Versión funcional del software o cuerpo de documentación técnica presentado de forma acumulativa al cierre de cada corte académico.
 
 ---
 
