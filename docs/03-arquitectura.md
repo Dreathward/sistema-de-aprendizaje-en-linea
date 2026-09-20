@@ -14,21 +14,21 @@ La arquitectura de la solución se organiza en tres capas principales: la capa d
 
 ```mermaid
 graph TD
-    subgraph Capa_Presentacion ["Capa de Presentación (Frontend)"]
-        UI ["Interfaz Web Adaptativa (HTML5 / CSS3 / JS)"]
+    subgraph Capa_Presentacion [Capa de Presentación - Frontend]
+        UI[Interfaz Web Adaptativa - HTML5 / CSS3 / JS]
     end
 
     UI -->|Peticiones HTTPS / JSON| Router
 
-    subgraph Monolito_Modular ["Servidor Principal (Monolito Modular en Python / FastAPI)"]
-        Router ["Enrutador de Peticiones HTTP / REST"]
+    subgraph Monolito_Modular [Servidor Principal - Monolito Modular en Python / FastAPI]
+        Router[Enrutador de Peticiones HTTP / REST]
         
-        subgraph Modulos_Dominio ["Módulos de Dominio (Desacoplados)"]
-            M_Auth ["Módulo de Autenticación y Perfiles"]
-            M_Comp ["Módulo de Competencias e Instituciones"]
-            M_Eval ["Módulo de Evaluación (Libre y Simulacro)"]
-            M_AI ["Módulo Orquestador de IA (Gemini API)"]
-            M_Metrics ["Módulo de Analíticas e Historial"]
+        subgraph Modulos_Dominio [Módulos de Dominio Desacoplados]
+            M_Auth[Módulo de Autenticación y Perfiles]
+            M_Comp[Módulo de Competencias e Instituciones]
+            M_Eval[Módulo de Evaluación - Libre y Simulacro]
+            M_AI[Módulo Orquestador de IA - Gemini API]
+            M_Metrics[Módulo de Analíticas e Historial]
         end
 
         Router --> M_Auth
@@ -38,16 +38,16 @@ graph TD
         Router --> M_Metrics
     end
 
-    subgraph Servicios_Persistencia ["Servicios Externos y Persistencia"]
-        DB [("Supabase: PostgreSQL & Auth")]
-        Gemini ["Google Gemini API (Tutoría de Descarte)"]
+    subgraph Servicios_Persistencia [Servicios Externos y Persistencia]
+        DB[(Supabase: PostgreSQL & Auth)]
+        Gemini[Google Gemini API - Tutoría de Descarte]
     end
 
     M_Auth -->|Validación de Tokens| DB
     M_Comp -->|Consulta Estructura ICFES| DB
     M_Eval -->|Banco de Preguntas y Respuestas| DB
-    M_Metrics -->|Lectura/Escritura de Métricas| DB
-    M_AI -->|Guarda / Consulta Caché de Tutorías| DB
+    M_Metrics -->|Lectura y Escritura de Métricas| DB
+    M_AI -->|Guarda o Consulta Caché de Tutorías| DB
     M_AI -->|Prompts Estructurados| Gemini
 ```
 
