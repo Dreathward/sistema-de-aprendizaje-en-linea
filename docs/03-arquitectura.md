@@ -61,10 +61,10 @@ Gestiona la identidad de los usuarios y el control de acceso basado en roles, di
 ### Módulo de Competencias e Instituciones
 Administra la estructura del conocimiento basada en el marco oficial del ICFES. En lugar de gestionar materias escolares estáticas, este módulo organiza los bancos de preguntas por competencias (como Lectura Crítica, Razonamiento Cuantitativo o Competencias Ciudadanas) y componentes específicos. Asimismo, permite la vinculación institucional para agrupar las métricas de los estudiantes según sus respectivos colegios o grupos de preparación.
 
-### Módulo de Evaluación (Entrenamiento Libre y Simulacro)
+### Módulo de Evaluación
 Se encarga de la lógica operativa de las pruebas, gestionando tanto la modalidad de Entrenamiento Libre como los Simulacros Reales. Administra la aleatorización de preguntas, el control de tiempos mediante cronómetro, el registro de respuestas seleccionadas y la ponderación de puntajes. Este módulo determina si la entrega requiere una intervención inmediata de la IA o si consolidará un informe diagnóstico al finalizar el intento.
 
-### Módulo Orquestador de IA (Tutoría de Descarte)
+### Módulo Orquestador de IA
 Actúa como la capa inteligente del sistema construida en FastAPI. Cuando el módulo de evaluación registra un fallo en la respuesta de un estudiante, el orquestador empaqueta el enunciado, la opción correcta y el distractor específico seleccionado para enviar un prompt estructurado a la API de Google Gemini. Adicionalmente, administra la estrategia de caché en la base de datos para almacenar y reutilizar explicaciones previas ante errores idénticos, reduciendo la latencia y el consumo del servicio externo.
 
 ### Módulo de Analíticas e Historial
