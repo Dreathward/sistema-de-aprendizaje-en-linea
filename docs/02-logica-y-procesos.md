@@ -10,40 +10,52 @@ Esta dinámica fomenta la autonomía del estudiante, quien puede medir su desemp
 
 ---
 
-## 2. Flujo Principal de Procesos (El Ciclo de Aprendizaje)
+## 2. Flujo Principal de Procesos
+
+El ciclo operativo del sistema se estructura en un flujo continuo de diagnóstico, evaluación y refuerzo personalizado que conecta las acciones del estudiante y el cuerpo docente con la arquitectura técnica backend y la IA. En lugar de depender de la creación semanal de guías manuales, el proceso inicia cuando la institución o el equipo docente habilita un módulo de entrenamiento o simulacro estructurado según las matrices de evidencia del ICFES.
+
+El estudiante accede a la interfaz e inicia la resolución de la prueba de forma autónoma. Al enviar sus respuestas, el servidor FastAPI procesa la prueba de manera inmediata contra el banco de datos en Supabase, calculando el nivel de desempeño obtenido e identificando las opciones incorrectas. En caso de detectar fallas en componentes clave, el backend no se limita a marcar el error; envía un prompt parametrizado a la API de Google Gemini enviando el enunciado, la opción correcta y el distractor específico seleccionado por el usuario. La IA genera una tutoría corta enfocada en la lógica de descarte, explicando el patrón de la trampa en la opción marcada y la técnica para identificar la respuesta válida.
+
+Finalmente, la tutoría generada se almacena en la caché de la base de datos para optimizar futuras consultas sobre el mismo ítem y se despliega en pantalla al estudiante. De forma paralela y asíncrona, el backend actualiza el historial del usuario y alimenta el mapa de calor institucional del grado o sección. Este registro consolidado permite a los docentes y directivos consultar analíticas precisas sobre los vacíos grupales antes de la prueba presencial, cerrando el ciclo con intervenciones focalizadas en el aula de clase.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Docente
-    actor Estudiante
-    participant UI as Cliente Web (Frontend)
-    participant Server as Backend (Python/FastAPI)
-    participant IA as Google Gemini API
+    actor Docente as Docente / Institucion
+    actor Estudiante as Estudiante
+    participant Frontend as Cliente Web (Frontend)
+    participant Backend as Backend (FastAPI)
     participant DB as Supabase (PostgreSQL)
+    participant AI as Google Gemini API
 
-    Docente->>UI: Selecciona tema y seccion (ej. 6-1)
-    UI->>IA: Solicita borrador de cuestionario
-    IA-->>UI: Retorna propuesta de preguntas
-    Docente->>UI: Revisa, aprueba y publica el taller
-    UI->>DB: Almacena taller asociado a la seccion
-    
-    Estudiante->>UI: Resuelve el cuestionario desde casa
-    UI->>Server: Envia respuestas del estudiante
-    Server->>Server: Evalua respuestas e identifica errores
-    
-    alt Si el estudiante presenta vacios conceptuales
-        Server->>IA: Envia prompt con fallas + grado del alumno
-        IA-->>Server: Genera tutoria de refuerzo personalizada
-        Server->>DB: Guarda historial y cache de tutoria
-        Server-->>UI: Despliega retroalimentacion pedagogica
-    else Si aprueba sin fallas
-        Server->>DB: Registra avance positivo
-        Server-->>UI: Confirma dominio del tema
+    %% Fase 1: Configuracion y Acceso
+    Docente->>Backend: Habilita modulo / simulacro por competencias
+    Backend->>DB: Registra disponibilidad de prueba
+    Estudiante->>Frontend: Inicia entrenamiento / simulacro
+    Frontend->>Backend: Solicita banco de preguntas de la competencia
+    Backend->>DB: Consulta ítems y opciones de descarte
+    DB-->>Backend: Retorna preguntas parametrizadas
+    Backend-->>Frontend: Entrega prueba al estudiante
+
+    %% Fase 2: Ejecucion y Evaluacion
+    Estudiante->>Frontend: Envia respuestas del cuestionario
+    Frontend->>Backend: Envia payload con opciones marcadas
+    Backend->>DB: Valida respuestas y calcula puntaje ponderado
+
+    %% Fase 3: Procesamiento Adaptativo con IA
+    alt Presenta opciones incorrectas (Distractores)
+        Backend->>AI: Envia prompt (Enunciado + Distractor marcado + Opcion correcta)
+        AI-->>Backend: Retorna tutoría basada en lógica de descarte
+        Backend->>DB: Almacena respuesta en caché de tutorías e historial
+        Backend-->>Frontend: Despliega retroalimentación adaptativa e inminente
+    else Aprueba sin fallas en el componente
+        Backend->>DB: Registra nivel de desempeño alto
+        Backend-->>Frontend: Confirma dominio de la competencia
     end
 
-    Server->>DB: Actualiza mapa de calor del grupo
-    Docente->>UI: Consulta analiticas para la siguiente clase
+    %% Fase 4: Analitica Institucional
+    Backend->>DB: Actualiza mapa de calor y métricas del grupo
+    Docente->>Frontend: Consulta reporte de competencias para refuerzo presencial
 ```
 
 ---
