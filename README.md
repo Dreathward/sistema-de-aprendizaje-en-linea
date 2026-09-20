@@ -35,7 +35,7 @@ Plataforma web adaptativa de aprendizaje para educación secundaria (grados 6° 
 
 Para la revisión del desarrollo y avance del proyecto, la documentación detallada se encuentra organizada en la carpeta `/docs`:
 
-1. [Presentación del Proyecto](./docs/01-presentacion.md) (Descripción general, objetivo y alcance)
+1. [Presentación del Proyecto](./docs/01-presentacion.pdf) (Descripción general, objetivo y alcance)
 2. [Lógica del Proyecto](./docs/02-logica-y-procesos.md) (Explicación del funcionamiento y procesos principales)
 3. [Avances de Arquitectura](./docs/03-arquitectura.md) (Descripción y evidencias de la arquitectura propuesta)
 4. [Modelo de Desarrollo](./docs/04-modelo-desarrollo.md) (Metodología utilizada)
