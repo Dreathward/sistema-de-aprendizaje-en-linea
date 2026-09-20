@@ -1,190 +1,201 @@
-# Historias de Usuario por Módulos de Arquitectura
+# Historias de Usuario
 
 ---
 
-## 1. Módulo de Autenticación y Gestión de Roles
+### Módulo 1: Autenticación y Perfiles
 
-### HU01 - Inicio de Sesión de Docentes
-* **Como** docente de secundaria,
-* **Quiero** autenticarme en la plataforma utilizando mi correo institucional y contraseña,
-* **Para** acceder de manera segura al panel de gestión de cursos y creación de evaluaciones.
+#### HU-01: Primer Acceso con Credenciales Institucionales
+* **Como** Estudiante,
+* **Quiero** ingresar por primera vez utilizando el usuario y contraseña temporal asignados por mi institución,
+* **Para** activar mi cuenta y establecer mis credenciales de acceso definitivas.
 * **Criterios de Aceptación:**
-  1. El backend valida las credenciales contra la base de datos en Supabase Auth.
-  2. Al autenticarse correctamente, se genera un Token JWT con permisos de rol `docente`.
-  3. Si las credenciales son incorrectas, la interfaz despliega un mensaje de error claro.
+  1. El sistema permite ingresar las credenciales preasignadas por la administración institucional.
+  2. En el primer inicio de sesión exitoso, exige el cambio obligatorio de la contraseña temporal por una personal y segura.
+  3. Al confirmar la nueva contraseña, valida los datos del usuario en Supabase Auth y redirige al panel principal del estudiante.
 
-### HU02 - Ingreso Simplificado de Estudiantes
-* **Como** estudiante de grado 9-3,
-* **Quiero** ingresar a la plataforma ingresando con mi código de estudiante y clase proporcionado por mi profesor,
-* **Para** acceder rápidamente a mis talleres asignados sin recordar contraseñas complejas.
+#### HU-02: Inicio de Sesión
+* **Como** Estudiante o Docente registrado,
+* **Quiero** ingresar con mi correo e contraseña,
+* **Para** acceder de forma segura a mi espacio de trabajo en la plataforma.
 * **Criterios de Aceptación:**
-  1. El estudiante no requiere registro de correo electrónico para acceder.
-  2. El sistema valida que el código de clase corresponda a una sección activa (ej. 9-3).
-  3. La sesión asigna el rol `estudiante` y restringe el acceso a rutas administrativas.
+  1. El sistema autentica las credenciales contra Supabase Auth y genera el token de sesión.
+  2. En caso de error en las credenciales, despliega un mensaje claro sin comprometer la seguridad.
+  3. Mantiene la sesión activa en el navegador del usuario para facilitar la navegación.
 
-### HU03 - Cierre de Sesión y Control de Acceso
-* **Como** usuario registrado (docente o estudiante),
-* **Quiero** poder cerrar mi sesión activa en cualquier momento desde la interfaz,
-* **Para** proteger la privacidad de mis datos e historial académico en equipos compartidos del colegio.
+#### HU-03: Visualización de Entorno Según Rol
+* **Como** Usuario registrado (Estudiante o Docente),
+* **Quiero** que la plataforma me muestre únicamente las herramientas e interfaces correspondientes a mi perfil,
+* **Para** interactuar con las funciones que me pertenecen sin confusiones ni accesos no autorizados.
 * **Criterios de Aceptación:**
-  1. La opción de cierre de sesión es visible en la barra superior de la aplicación.
-  2. Al cerrar sesión, el Token JWT se invalida y el cliente web redirige a la pantalla de login.
-  3. Intentar navegar hacia rutas protegidas por URL sin un token válido redirige automáticamente al login.
+  1. El usuario con rol `estudiante` accede directamente al catálogo de competencias, entrenamientos y simulacros.
+  2. El usuario con rol `docente` o `institución` ingresa al panel de monitoreo y mapas de calor institucionales.
+  3. Si un estudiante intenta ingresar manualmente a una ruta reservada para docentes, se le deniega el acceso y se le redirige a su panel principal.
 
-### HU04 - Gestión de Perfil de Usuario
-* **Como** estudiante de grado 10-1,
-* **Quiero** visualizar mi nombre completo, curso asignado y avatar de usuario en mi panel principal,
-* **Para** confirmar que estoy trabajando dentro del grupo e historial académico correcto.
+#### HU-04: Gestión de Perfil de Usuario
+* **Como** Estudiante o Docente,
+* **Quiero** actualizar mis datos personales e institución vinculada desde la configuración de mi cuenta,
+* **Para** mantener mi información al día en las métricas y reportes del sistema.
 * **Criterios de Aceptación:**
-  1. La API retorna los datos básicos del perfil guardados en Supabase al cargar el panel.
-  2. El estudiante puede actualizar su nombre o foto de perfil si la institución lo habilita.
+  1. Permite modificar nombre completo e institución o sección asociada.
+  2. Guarda los cambios de forma inmediata en la base de datos de Supabase.
+  3. Muestra una confirmación visual en pantalla al actualizar los datos correctamente.
 
 ---
 
-## 2. Módulo de Gestión de Cursos y Secciones
+### Módulo 2: Competencias e Instituciones
 
-### HU05 - Creación y Configuración de Secciones Académicas
-* **Como** docente de matemáticas,
-* **Quiero** registrar nuevas secciones académicas (ej. 8-2, 10-1, 11-3) asignadas a la materia,
-* **Para** clasificar y organizar a los estudiantes según su grupo escolar.
+#### HU-05: Consulta del Catálogo de Competencias ICFES
+* **Como** Estudiante,
+* **Quiero** explorar las áreas del examen (Lectura Crítica, Razonamiento Cuantitativo, Ciencias Naturales, Competencias Ciudadanas e Inglés),
+* **Para** seleccionar la competencia en la que deseo practicar.
 * **Criterios de Aceptación:**
-  1. El docente puede crear una sección definiendo nombre, grado y año lectivo.
-  2. El sistema genera automáticamente un código único de 6 caracteres alfanuméricos por sección.
-  3. La sección creada queda visible inmediatamente en el tablero del docente.
+  1. Muestra las áreas de evaluación según la estructura oficial del ICFES.
+  2. Permite seleccionar componentes específicos dentro de cada área.
+  3. Muestra una breve explicación sobre la habilidad que se evalúa.
 
-### HU06 - Asociación de Estudiantes a Secciones
-* **Como** docente,
-* **Quiero** visualizar el listado de estudiantes inscritos en la sección 9-3,
-* **Para** verificar la asistencia y participación de mi grupo de clase.
+#### HU-06: Gestión de Grupos y Estudiantes por el Docente
+* **Como** Docente,
+* **Quiero** ver y administrar la lista de estudiantes de mis grupos asignados,
+* **Para** verificar qué alumnos tienen acceso a las evaluaciones de la plataforma.
 * **Criterios de Aceptación:**
-  1. El módulo de backend permite listar todos los estudiantes asociados a un código de sección.
-  2. El docente puede desvincular o mover un estudiante de sección si existe un error de matriculación.
+  1. Muestra la lista de estudiantes organizada por grupo o salón.
+  2. Permite verificar que los datos del estudiante estén vinculados correctamente a la institución.
+  3. Permite activar o desactivar el acceso de un estudiante si es necesario.
 
-### HU07 - Visualización de Talleres Pendientes
-* **Como** estudiante de grado 11-2,
-* **Quiero** ver la lista de cuestionarios activos y fechas de entrega asignadas a mi sección,
-* **Para** planificar la resolución de mis tareas de estudio.
+#### HU-07: Programación de Simulacros
+* **Como** Docente,
+* **Quiero** programar un simulacro para mis grupos indicando la fecha y el tiempo disponible,
+* **Para** evaluarlos en las mismas condiciones que la prueba real.
 * **Criterios de Aceptación:**
-  1. El panel del estudiante consume la API REST de cursos y lista los talleres publicados no resueltos.
-  2. Cada taller muestra su tema, fecha límite y número de preguntas.
+  1. Permite elegir las competencias que incluirá el simulacro.
+  2. Permite definir la fecha, hora de inicio y el tiempo límite para responder.
+  3. Muestra el simulacro disponible en la pantalla del estudiante en la fecha indicada.
 
-### HU08 - Publicación y Deshabilitación de Material
-* **Como** docente,
-* **Quiero** cambiar el estado de un taller entre "Borrador", "Publicado" u "Oculto",
-* **Para** controlar el momento exacto en que los estudiantes pueden responder las evaluaciones.
+#### HU-08: Banco de Preguntas y Respuestas
+* **Como** Administrador o Docente,
+* **Quiero** revisar las preguntas del banco agrupadas por competencia y sus opciones de respuesta,
+* **Para** asegurar que cada pregunta tenga sus respuestas bien configuradas con sus explicaciones.
 * **Criterios de Aceptación:**
-  1. Los talleres en estado "Borrador" no son visibles para la interfaz del estudiante.
-  2. Al cambiar a "Publicado", el sistema habilita el cuestionario para la sección correspondiente.
+  1. Muestra las preguntas organizadas por área y tema.
+  2. Verifica que las opciones incorrectas tengan asignada la causa del error para la tutoría.
+  3. Permite activar o desactivar preguntas del banco principal.
 
 ---
 
-## 3. Módulo de Evaluación y Banco de Preguntas
+### Módulo 3: Evaluación
 
-### HU09 - Generación Asistida de Borradores de Evaluación
-* **Como** docente de biología,
-* **Quiero** solicitar una propuesta de 5 preguntas de opción múltiple sobre un tema específico (ej. Genética para grado 9-3),
-* **Para** acelerar la creación de cuestionarios alineados al currículo escolar.
+#### HU-09: Práctica en Modo Entrenamiento Libre
+* **Como** Estudiante,
+* **Quiero** resolver preguntas de una competencia seleccionada a mi propio ritmo y sin límite de tiempo,
+* **Para** poner a prueba mis conocimientos y solicitar apoyo pedagógico inmediato cuando tenga dudas.
 * **Criterios de Aceptación:**
-  1. El docente selecciona el tema, cantidad de preguntas y grado académico.
-  2. El backend invoca al orquestador de IA para retornar la estructura en formato JSON.
-  3. El cuestionario se despliega en modo edición previo a su almacenamiento final.
+  1. Presenta las preguntas de forma secuencial con las opciones de respuesta múltiples.
+  2. No aplica restricciones de tiempo ni cronómetro regresivo durante la sesión.
+  3. Muestra una opción visible para confirmar y enviar la respuesta seleccionada en cada pregunta.
 
-### HU10 - Edición y Aprobación de Preguntas
-* **Como** docente,
-* **Quiero** revisar, corregir o reemplazar las opciones de respuesta del borrador generado,
-* **Para** garantizar la precisión pedagógica antes de enviarlo a mis estudiantes.
+#### HU-10: Presentación de Simulacro Real Temporizado
+* **Como** Estudiante,
+* **Quiero** realizar un examen de simulacro con tiempo límite y condiciones controladas,
+* **Para** vivir una experiencia similar a la prueba oficial del ICFES.
 * **Criterios de Aceptación:**
-  1. La interfaz permite editar el enunciado, las 4 opciones de respuesta y la respuesta correcta.
-  2. El docente puede agregar preguntas manuales al banco antes de guardar.
-  3. El cuestionario definitivo se almacena en las tablas relacionales de Supabase.
+  1. Muestra un cronómetro visible en pantalla con el tiempo restante programado por el docente.
+  2. Bloquea las retroalimentaciones inmediatas de la inteligencia artificial durante el examen.
+  3. Envía automáticamente las respuestas registradas cuando el tiempo asignado finaliza.
 
-### HU11 - Resolución Interactiva de Cuestionarios
-* **Como** estudiante de grado 10-1,
-* **Quiero** responder las preguntas de un taller opción por opción desde mi navegador,
-* **Para** completar mi proceso de evaluación formativa.
+#### HU-11: Registro y Navegación de Respuestas
+* **Como** Estudiante,
+* **Quiero** seleccionar y modificar mis opciones de respuesta antes de finalizar la evaluación,
+* **Para** revisar mis selecciones y asegurarme de marcar las opciones deseadas.
 * **Criterios de Aceptación:**
-  1. La interfaz muestra las preguntas de una en una o en formato de lista navegable.
-  2. El cliente web registra las opciones seleccionadas y las envía en un payload JSON al backend.
-  3. No se permite reenviar un taller ya finalizado a menos que el docente habilite un nuevo intento.
+  1. Permite marcar una opción de respuesta por pregunta y cambiar la selección mientras el intento esté activo.
+  2. Indica de forma visual cuáles preguntas han sido respondidas y cuáles están pendientes.
+  3. Solicita confirmación al estudiante antes de realizar la entrega final de la prueba.
 
-### HU12 - Calificación Inmediata y Diagnóstico
-* **Como** estudiante de grado 8-4,
-* **Quiero** obtener mi puntaje total al finalizar la entrega del cuestionario,
-* **Para** conocer inmediatamente mi nivel de desempeño en el taller.
+#### HU-12: Calificación y Ponderación de Intentos
+* **Como** Estudiante,
+* **Quiero** recibir el resultado general al terminar un simulacro o sesión de práctica,
+* **Para** conocer mi nivel de desempeño y el número de aciertos por competencia.
 * **Criterios de Aceptación:**
-  1. El backend (FastAPI) compara la respuesta enviada con la clave guardada en la base de datos.
-  2. Se calcula el puntaje numérico y se retorna el desglose de aciertos y desaciertos al instante.
+  1. Calcula el puntaje total y el porcentaje de aciertos al cerrar la prueba.
+  2. Desglosa los resultados indicando respuestas correctas e incorrectas por competencia.
+  3. Registra el intento en la base de datos para habilitar la consulta posterior en el historial.
 
 ---
 
-## 4. Módulo de Integración con IA (Orquestador Gemini API)
+### Módulo 4: Orquestador de IA
 
-### HU13 - Tutoría Adaptativa por Vacíos Conceptuales
-* **Como** estudiante de grado 9-3,
-* **Quiero** recibir una explicación corta y adaptada a mi nivel escolar cuando falle una pregunta clave,
-* **Para** comprender el concepto erróneo sin tener que esperar a la siguiente clase.
+#### HU-13: Solicitud de Tutoría por Lógica de Descarte
+* **Como** Estudiante en Modo Entrenamiento Libre,
+* **Quiero** solicitar una explicación cuando me equivoque en una pregunta,
+* **Para** entender por qué la opción que elegí es un distractor incorrecto sin que la plataforma me regale la respuesta directa.
 * **Criterios de Aceptación:**
-  1. Cuando el backend detecta una respuesta incorrecta, extrae la falencia y el grado del alumno.
-  2. El módulo de IA envía un prompt estructurado a la API de Google Gemini 1.5 Flash.
-  3. La respuesta de la IA debe ser explicativa, breve y adecuada para la edad del grado evaluado.
+  1. Habilita el botón de tutoría de IA únicamente tras registrar una respuesta incorrecta en entrenamiento libre.
+  2. Envía a la API de Gemini el contexto de la pregunta, la opción seleccionada y la causa del error.
+  3. Muestra una explicación enfocada en el análisis del error y la lógica para descartar dicha opción.
 
-### HU14 - Caché de Tutorías y Optimización
-* **Como** estudiante,
-* **Quiero** recibir la retroalimentación de IA de forma casi instantánea,
-* **Para** continuar respondiendo la prueba sin demoras ni interrupciones.
+#### HU-14: Optimización de Respuestas Mediante Caché
+* **Como** Estudiante,
+* **Quiero** recibir la retroalimentación de la IA de forma rápida al solicitar una tutoría,
+* **Para** continuar mi entrenamiento sin interrupciones ni esperas prolongadas.
 * **Criterios de Aceptación:**
-  1. El backend consulta en Supabase si la misma falla conceptual para ese grado ya fue explicada antes.
-  2. Si existe en caché, retorna el texto guardado omitiendo la llamada remota a la API de Gemini.
-  3. Si no existe, realiza la petición a Gemini y guarda la respuesta generada en caché.
+  1. Verifica en la base de datos si la explicación a ese error específico ya fue generada previamente.
+  2. Si la respuesta está guardada en caché, la despliega inmediatamente en pantalla.
+  3. Si no existe en caché, realiza la petición a Gemini, entrega la explicación y la almacena para futuras consultas.
 
-### HU15 - Generación de Ejemplos Prácticos de Refuerzo
-* **Como** estudiante de grado 11-1,
-* **Quiero** pedir un ejemplo práctico o cotidiano sobre un ejercicio de física o matemáticas donde me equivoqué,
-* **Para** visualizar la aplicación del concepto en la vida real.
+#### HU-15: Retroalimentación Pedagógica Formateada
+* **Como** Estudiante,
+* **Quiero** ver la explicación de la IA organizada de forma clara y legible,
+* **Para** identificar rápidamente el fallo conceptual y el razonamiento correcto.
 * **Criterios de Aceptación:**
-  1. La interfaz incluye el botón "Ver ejemplo práctico" junto a la retroalimentación del error.
-  2. La IA genera una analogía o problema resuelto paso a paso adaptado al grado 11°.
+  1. Presenta el texto explicativo con formato limpio (resaltados y viñetas sencillas).
+  2. Limita la extensión de la respuesta a un párrafo breve y directo focalizado en la lógica de descarte.
+  3. Muestra un mensaje amigable en caso de interrupción en el servicio de la API externa.
 
-### HU16 - Ajuste de Tono y Formato Pedagógico
-* **Como** docente,
-* **Quiero** asegurar que las explicaciones generadas por la IA mantengan un lenguaje respetuoso, motivador y claro,
-* **Para** evitar frustraciones o confusión en el aprendizaje de los alumnos.
+#### HU-16: Evaluación Autónoma sin Ayudas en Simulacros
+* **Como** Docente,
+* **Quiero** que los simulacros reales mantengan desactivada la tutoría de IA durante la prueba,
+* **Para** evaluar el rendimiento real de mis estudiantes sin interferencias ni apoyos externos.
 * **Criterios de Aceptación:**
-  1. El System Prompt del backend incluye restricciones estrictas de tono pedagógico y brevedad (máx. 150 palabras).
-  2. Se filtran posibles alucinaciones o términos técnicos avanzados no aptos para educación secundaria.
+  1. Oculta y desactiva la opción de tutoría de IA mientras el estudiante esté presentado un simulacro real.
+  2. Impide el envío de peticiones al módulo de IA durante el intento activo del examen.
+  3. Permite la consulta de las explicaciones de IA únicamente al finalizar el examen en la fase de revisión.
 
 ---
 
-## 5. Módulo de Analíticas y Reportes
+### Módulo 5: Analíticas e Historial
 
-### HU17 - Mapa de Calor por Sección Académica
-* **Como** docente de grado 10-3,
-* **Quiero** ver una gráfica/mapa de calor interactivo de los temas con mayor índice de error en el grupo,
-* **Para** identificar con precisión los vacíos que debo reforzar en la clase presencial.
+#### HU-17: Historial Individual de Desempeño
+* **Como** Estudiante,
+* **Quiero** consultar el historial de mis entrenamientos y simulacros realizados,
+* **Para** monitorear mi nivel de avance y revisar los aciertos y fallos acumulados en cada competencia.
 * **Criterios de Aceptación:**
-  1. El módulo de analíticas procesa los resultados almacenados en Supabase y agrupa los errores por tema.
-  2. La interfaz dibuja el mapa de calor utilizando códigos de color (rojo: crítico, amarillo: medio, verde: óptimo).
+  1. Muestra un listado con los intentos pasados, indicando fecha, modalidad y puntaje obtenido.
+  2. Permite filtrar los resultados por competencia específica del ICFES.
+  3. Despliega el detalle de cada intento con las respuestas seleccionadas y las explicaciones de descarte consultadas.
 
-### HU18 - Historial y Progreso Individual del Estudiante
-* **Como** docente,
-* **Quiero** consultar el historial de calificaciones y preguntas falladas de un estudiante en particular,
-* **Para** llevar un seguimiento personalizado de su evolución durante el periodo académico.
+#### HU-18: Reportes de Rendimiento para Docentes
+* **Como** Docente,
+* **Quiero** acceder a un panel general con los resultados de mis grupos,
+* **Para** identificar qué estudiantes o salones necesitan refuerzo en competencias específicas.
 * **Criterios de Aceptación:**
-  1. Al hacer clic en un alumno de la lista, se abre un reporte detallado con su tasa de aciertos y talleres completados.
-  2. Permite exportar o visualizar un resumen del progreso individual.
+  1. Muestra el promedio de desempeño del grupo organizado por área evaluada.
+  2. Permite visualizar el avance individual de cada estudiante vinculado al grupo.
+  3. Permite exportar o consultar un resumen de notas y porcentajes de acierto por prueba.
 
-### HU19 - Reporte de Interacciones con la IA
-* **Como** docente,
-* **Quiero** visualizar cuántas tutorías de refuerzo ha solicitado cada sección (ej. 7-2) y qué temas generaron más consultas,
-* **Para** evaluar el nivel de autonomía y dudas frecuentes de los alumnos.
+#### HU-19: Mapa de Calor de Brechas Conceptuales
+* **Como** Docente,
+* **Quiero** visualizar un mapa de calor que resalte los distractores más seleccionados por el grupo,
+* **Para** detectar las falencias conceptuales recurrentes y preparar retroalimentaciones en las clases presenciales.
 * **Criterios de Aceptación:**
-  1. El backend consolida el conteo de tutorías solicitadas por tema y sección.
-  2. La interfaz gráfica muestra las estadísticas tabuladas para el docente.
+  1. Agrupa los errores del salón por tema y por la hipótesis de error específica del distractor marcado.
+  2. Resalta de forma visual (colores o indicadores) los temas con mayor tasa de desacierto.
+  3. Muestra el porcentaje de estudiantes del grupo que cayeron en la misma trampa conceptual.
 
-### HU20 - Tablero Consolidado para Administración
-* **Como** docente,
-* **Quiero** visualizar un resumen general con el total de talleres activos, promedio del curso y participación,
-* **Para** tener un diagnóstico rápido al ingresar a la plataforma antes de iniciar la jornada escolar.
+#### HU-20: Consulta de Indicadores Institucionales
+* **Como** Administrador Institucional,
+* **Quiero** revisar el desempeño global de la institución comparado entre grupos o sedes,
+* **Para** tomar decisiones directivas sobre los planes de preparación para las Pruebas Saber.
 * **Criterios de Aceptación:**
-  1. El panel principal (Dashboard) calcula y muestra métricas globales en tiempo real.
-  2. Los datos se actualizan automáticamente tras cada entrega de cuestionario.
+  1. Muestra gráficos con el nivel de desempeño proyectado de la institución por competencia.
+  2. Permite comparar las métricas generales entre distintas secciones o jornadas de la institución.
+  3. Actualiza los datos de forma automática a medida que los estudiantes completan nuevos simulacros.
