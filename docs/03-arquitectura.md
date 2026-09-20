@@ -74,7 +74,9 @@ Procesa las interacciones y resultados acumulados para construir diagnósticos g
 
 ## 4. Componentes Tecnológicos e Infraestructura
 
-* **Frontend:** Cliente web interactivo basado en HTML5, CSS3 y JavaScript, optimizado para bajo consumo de datos en redes escolares.
-* **Backend:** Servidor en **Python** estructurado con el framework **FastAPI**, organizado bajo el patrón de carpetas por módulo (`src/modules/...`).
-* **Base de Datos y Persistencia:** Supabase (PostgreSQL relacional) con esquemas definidos para el almacenamiento de usuarios, secciones, cuestionarios, intentos y respuestas de caché.
-* **Proveedor de IA:** Google Gemini API (modelo Gemini 1.5 Flash integrado mediante la librería oficial `google-genai` en Python), seleccionado por su baja latencia y alta precisión pedagógica.
+La infraestructura tecnológica del proyecto se fundamenta en un conjunto de tecnologías de código abierto y servicios en la nube orientados a garantizar alta velocidad de respuesta, bajo consumo de ancho de banda y facilidad de despliegue:
+
+* **Frontend (Cliente Web):** Desarrollado en HTML5, CSS3 y JavaScript vanilla o de bajo peso, optimizado para ejecutarse eficientemente en navegadores de dispositivos escolares con recursos limitados. Gestiona la renderización dinámica de pruebas, temporizadores y la interfaz de retroalimentación en tiempo real.
+* **Backend (Servidor de Aplicación):** Construido en Python utilizando el framework **FastAPI**. Su estructura interna sigue el patrón de carpetas por módulo (`src/modules/...`), permitiendo mantener un enrutamiento REST liviano, asíncrono y de alto rendimiento para el procesamiento de payloads de evaluación.
+* **Base de Datos y Persistencia:** Administrada mediante **Supabase** respaldado por PostgreSQL. El esquema relacional almacena la gestión de usuarios, el banco de preguntas categorizado por competencias del ICFES, las respuestas enviadas en cada intento y la tabla de caché para almacenar las tutorías generadas.
+* **Proveedor de Inteligencia Artificial:** Integrado con la API de **Google Gemini** (modelo Gemini 1.5 Flash) a través de la librería oficial `google-genai` en Python. Su selección responde a sus bajos tiempos de latencia, eficiencia en cuotas de uso y alta capacidad para procesar instrucciones complejas de descarte pedagógico.
