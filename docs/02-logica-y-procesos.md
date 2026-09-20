@@ -62,18 +62,17 @@ sequenceDiagram
 
 ## 3. Módulos y Funciones del Sistema
 
-### Panel de Administración del Docente
-Funciona como el centro de control para el profesor. Desde allí se gestionan los diferentes salones de forma independiente, lo cual permite adaptar las actividades al ritmo real de cada grupo, por ejemplo, separando la intensidad o avance de 6-1 frente a 6-2. 
+### Panel de Gestión Institucional y Docente
+Funciona como el centro de monitoreo analítico para docentes y directivos. A diferencia de un entorno convencional de calificación de tareas, este módulo permite consultar el desempeño de los estudiantes agrupado por competencias y componentes del ICFES en lugar de notas tradicionales. El docente puede revisar mapas de calor institucionales que identifican las brechas conceptuales del grupo, gestionar la activación de simulacros globales o habilitar bancos de entrenamiento específicos, y acceder a reportes consolidados que orientan la planeación de refuerzos presenciales en el aula de clase.
 
-El docente elige los temas trabajados en el aula presencial y solicita al sistema una propuesta de taller. Una vez generadas las preguntas, las revisa, realiza los ajustes necesarios y las activa para sus alumnos. Posteriormente, consulta un mapa de rendimiento grupal que le muestra cuáles temas causaron mayor dificultad.
+### Interfaz del Estudiante y Modos de Evaluación
+Es el entorno interactivo donde el alumno gestiona su preparación de forma autónoma o institucional. Para garantizar una preparación integral, la interfaz se divide en dos secciones operativas principales:
 
-### Interfaz del Estudiante
-Es el espacio donde el alumno resuelve las actividades asignadas a su curso. Al terminar un ejercicio, si comete un fallo, la pantalla no se limita a marcar la respuesta en rojo; automáticamente despliega una tutoría breve que le explica el procedimiento correcto paso a paso, usando un lenguaje adecuado para su grado académico.
+* **Modo Entrenamiento Libre:** Espacio de práctica flexible donde el estudiante selecciona la competencia específica que desea fortalecer (como Lectura Crítica o Razonamiento Cuantitativo). Durante este flujo, la IA de Google Gemini interviene de manera inminente ante cada error, desplegando una tutoría corta orientada a la lógica de descarte sobre la opción marcada y sugiriendo recursos complementarios para reforzar la falencia.
+* **Modo Simulacro Real:** Módulo de evaluación controlada que mimetiza las condiciones del examen presencial mediante pruebas temporizadas y cronometradas en pantalla. Durante la ejecución de la prueba, la retroalimentación de la IA se deshabilita para mantener la concentración del usuario. Al finalizar la entrega, el sistema procesa el resultado global, emite un puntaje proyectado y entrega un informe diagnóstico detallado con la revisión adaptativa de las preguntas falladas.
 
-### Servicio de Backend e Integración con IA
-El servidor recibe las entregas de los estudiantes, las compara contra las respuestas correctas y determina si es necesario solicitar apoyo a la API de Google Gemini. 
-
-Cuando detecta vacíos en las respuestas, construye una consulta detallada para la IA exigiendo que las explicaciones se mantengan estrictamente dentro del nivel escolar correspondiente. Para evitar un consumo excesivo de la API y agilizar la respuesta, el sistema guarda en memoria las tutorías generadas para errores comunes y las reutiliza si otros compañeros del mismo salón cometen la misma falla.
+### Servicio Backend e Integración con IA (Orquestador de Diagnóstico)
+El servidor en FastAPI actúa como el núcleo lógico del sistema, encargado de validar las entregas, procesar las matrices de ponderación y gestionar las comunicaciones con la base de datos y los servicios externos. Cuando el motor detecta elecciones incorrectas en las pruebas, construye un prompt altamente parametrizado hacia la API de Google Gemini, enviando el enunciado, la respuesta correcta y el distractor específico marcado por el usuario para exigir una explicación enfocada exclusivamente en el descarte de la trampa. Para optimizar el rendimiento de la red y reducir costos operativos, el backend almacena las tutorías generadas en una tabla de caché en Supabase, permitiendo reutilizar explicaciones previas ante errores idénticos cometidos por otros usuarios.
 
 ---
 
