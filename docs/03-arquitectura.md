@@ -55,20 +55,20 @@ graph TD
 
 ## 3. Descripción de los Módulos de Dominio
 
-### Módulo de Autenticación y Control de Acceso
-Gestiona la identidad de los usuarios, diferenciando los permisos y vistas entre el rol de **Docente** y el rol de **Estudiante**. Se integra directamente con el servicio de seguridad de Supabase Auth para el manejo de sesiones mediante tokens seguros.
+### Módulo de Autenticación y Perfiles
+Gestiona la identidad de los usuarios y el control de acceso basado en roles, diferenciando los permisos entre el perfil de Estudiante y el perfil de Gestión Institucional o Docente. Se integra directamente con Supabase Auth para la administración de sesiones seguras mediante tokens JWT, garantizando que cada petición al servidor mantenga el contexto y la trazabilidad del usuario.
 
-### Módulo de Cursos y Secciones
-Resuelve la variabilidad del entorno escolar permitiendo la administración independiente de aulas. Permite la clonación de talleres entre secciones y el control de disponibilidad de las actividades según el avance real de cada grupo.
+### Módulo de Competencias e Instituciones
+Administra la estructura del conocimiento basada en el marco oficial del ICFES. En lugar de gestionar materias escolares estáticas, este módulo organiza los bancos de preguntas por competencias (como Lectura Crítica, Razonamiento Cuantitativo o Competencias Ciudadanas) y componentes específicos. Asimismo, permite la vinculación institucional para agrupar las métricas de los estudiantes según sus respectivos colegios o grupos de preparación.
 
-### Módulo de Evaluación y Cuestionarios
-Encargado de la estructura de las evaluaciones, el registro de opciones de respuesta y la calificación automática en el servidor al momento en que un alumno envía su intento.
+### Módulo de Evaluación (Entrenamiento Libre y Simulacro)
+Se encarga de la lógica operativa de las pruebas, gestionando tanto la modalidad de Entrenamiento Libre como los Simulacros Reales. Administra la aleatorización de preguntas, el control de tiempos mediante cronómetro, el registro de respuestas seleccionadas y la ponderación de puntajes. Este módulo determina si la entrega requiere una intervención inmediata de la IA o si consolidará un informe diagnóstico al finalizar el intento.
 
-### Módulo Adaptativo de IA (Orquestador de Prompts)
-Actúa como la capa de inteligencia del sistema construida en Python. Cuando el módulo de evaluación detecta fallas conceptuales en la entrega de un estudiante, este módulo empaqueta el contexto académico (grado, tema y tipo de error) y consulta la API de Google Gemini para obtener una tutoría explicativa. Implementa un mecanismo de almacenamiento en caché en la base de datos para reutilizar explicaciones frente a errores idénticos.
+### Módulo Orquestador de IA (Tutoría de Descarte)
+Actúa como la capa inteligente del sistema construida en FastAPI. Cuando el módulo de evaluación registra un fallo en la respuesta de un estudiante, el orquestador empaqueta el enunciado, la opción correcta y el distractor específico seleccionado para enviar un prompt estructurado a la API de Google Gemini. Adicionalmente, administra la estrategia de caché en la base de datos para almacenar y reutilizar explicaciones previas ante errores idénticos, reduciendo la latencia y el consumo del servicio externo.
 
-### Módulo de Analíticas
-Agrupa y procesa las calificaciones e intentos de los estudiantes para construir visualizaciones consolidadas ("mapas de calor") que sirven como insumo diagnóstico para el docente en su aula presencial.
+### Módulo de Analíticas e Historial
+Procesa las interacciones y resultados acumulados para construir diagnósticos globales e individuales. Para el estudiante, genera históricos de evolución y nivel de desempeño proyectado por competencia. Para las instituciones y docentes, consolida mapas de calor que exponen las brechas conceptuales del grupo, ofreciendo insumos precisos para guiar los refuerzos en las clases presenciales.
 
 ---
 
