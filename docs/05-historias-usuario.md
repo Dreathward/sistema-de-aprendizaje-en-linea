@@ -1,10 +1,5 @@
 # Historias de Usuario por Módulos de Arquitectura
 
-**Asignatura:** Ingeniería de Software II  
-**Proyecto:** Plataforma de Aprendizaje con IA Adaptativa  
-**Universidad:** Universidad Antonio Nariño – Sede Sur, Bogotá  
-**Periodo:** 2026-2  
-
 ---
 
 ## 1. Módulo de Autenticación y Gestión de Roles
