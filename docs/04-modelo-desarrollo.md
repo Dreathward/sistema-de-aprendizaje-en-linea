@@ -31,14 +31,14 @@ El marco de trabajo Scrum se adapta para alinear la dinámica interna del equipo
 
 ## 3. Planificación
 
-El desarrollo se estructura en **7 Sprints distribuidos en los 4 Cortes evaluativos**:
+El ciclo de desarrollo se estructura en **7 Sprints de 2 semanas de duración cada uno**, distribuidos estratégicamente a lo largo de los **4 Cortes Evaluativos** de la universidad para asegurar un avance constante y entregas incrementales funcionales:
 
 | Corte Académico | Sprint | Duración Estimada | Alcance y Tareas Principales | Entregable del Sprint / Corte |
 | :--- | :--- | :--- | :--- | :--- |
-| **Corte 1** | **Sprint 1** | 2 Semanas | **Análisis y Diseño:** Levantamiento de requerimientos, definición de arquitectura y documentación base en GitHub. | Repositorio estructurado y carpeta `/docs` completa. |
-| **Corte 2** | **Sprint 2** | 2 Semanas | **Infraestructura:** Modelado relacional en Supabase, servidor Backend en Python/FastAPI y rutas iniciales. | Base de datos desplegada y API REST base funcional. |
-| | **Sprint 3** | 2 Semanas | **Interfaz y Usuarios:** Desarrollo Frontend en HTML/CSS/JS e integración del módulo de autenticación. | Módulo funcional de usuarios y secciones. |
-| **Corte 3** | **Sprint 4** | 2 Semanas | **Integración de IA:** Conexión de Google Gemini API en Python, diseño de prompts por grado escolar y caché de tutorías. | Motor de generación de contenido explicativo operativo. |
-| | **Sprint 5** | 2 Semanas | **Motor de Evaluación:** Cuestionarios interactivos, calificación automática e identificación de fallas conceptuales. | Módulo de tutoría adaptativa e interacción completa del alumno. |
-| **Corte 4** | **Sprint 6** | 2 Semanas | **Analíticas y Diagnóstico:** Reportes para docentes con mapas de rendimiento grupal e historial de actividades. | Panel de analíticas para el profesor integrado. |
-| | **Sprint 7** | 2 Semanas | **Pruebas y Cierre:** Pruebas integrales de rendimiento, corrección de errores, despliegue del sistema y documentación de pruebas. | MVP desplegado en la nube y registro visual en `06-evidencias.md`. |
+| **Corte 1** | **Sprint 1** | 2 Semanas | **Análisis y Diseño:** Levantamiento de requerimientos, definición de la arquitectura modular y documentación base en el repositorio GitHub. | Repositorio estructurado y directorio `/docs` completo. |
+| **Corte 2** | **Sprint 2** | 2 Semanas | **Infraestructura y Persistencia:** Modelado de base de datos relacional en Supabase con matrices del ICFES, servidor FastAPI en Python y rutas base REST. | Base de datos desplegada y API REST inicial funcional. |
+| | **Sprint 3** | 2 Semanas | **Interfaz y Autenticación:** Desarrollo del cliente web en HTML/CSS/JS, gestión de roles (Estudiante/Institución) y módulo de autenticación segura. | Módulo funcional de usuarios y perfiles. |
+| **Corte 3** | **Sprint 4** | 2 Semanas | **Integración de IA (Orquestador):** Conexión de Google Gemini API en Python, diseño de prompts por descarte pedagógico y tabla de caché para tutorías. | Motor explicativo de tutoría adaptativa operativo. |
+| | **Sprint 5** | 2 Semanas | **Motor de Evaluación Dual:** Lógica de preguntas aleatorias para Modo Entrenamiento Libre (inmediato) y Modo Simulacro Real (temporizado con informe final). | Módulo de evaluaciones por competencias integrado. |
+| **Corte 4** | **Sprint 6** | 2 Semanas | **Analíticas e Historial Institucional:** Reportes para docentes y colegios con mapas de calor grupales por competencia e historial del estudiante. | Panel de analíticas e indicadores institucionales. |
+| | **Sprint 7** | 2 Semanas | **Pruebas y Cierre:** Pruebas integrales de rendimiento, optimización de caché, corrección de errores, despliegue final y evidencias de funcionamiento. | MVP desplegado en la nube y registro visual en `/docs/06-evidencias`. |
