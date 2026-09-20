@@ -2,51 +2,53 @@
 
 ## 1. Estilo Arquitectónico
 
-Para el diseño y construcción de la plataforma se seleccionó el estilo arquitectónico de **Monolito Modular**. Esta decisión responde a la necesidad de mantener un sistema altamente mantenible, desacoplado y fácil de desplegar, evitando la sobreingeniería y complejidad operativa que representan los microservicios en etapas tempranas.
+Para el diseño y construcción de la plataforma se seleccionó el estilo arquitectónico de **Monolito Modular**. Esta decisión responde a la necesidad de mantener un sistema altamente mantenible, desacoplado y fácil de desplegar dentro de un único repositorio de código.
 
-A diferencia de un monolito convencional de capas planas, la aplicación organiza su lógica de negocio en **módulos funcionales independientes** centrados en el dominio del problema. Cada módulo gestiona su propia lógica y expone interfaces claras para comunicarse con el resto del sistema.
+A diferencia de un monolito convencional de capas planas, la aplicación organiza su lógica de negocio en módulos funcionales independientes centrados en el dominio del problema. Cada módulo gestiona sus propias reglas de negocio y expone interfaces claras para comunicarse con el resto del sistema. De esta manera, componentes como el motor de evaluación por competencias, el orquestador de IA o el generador de analíticas institucionales operan de forma aislada, facilitando el mantenimiento y la evolución del código por parte del equipo de desarrollo.
 
 ---
 
 ## 2. Diagrama de Arquitectura del Sistema
 
+La arquitectura de la solución se organiza en tres capas principales: la capa de presentación en el cliente web, el servidor de aplicación monolítico modular desarrollado en Python con FastAPI, y la capa de persistencia y servicios externos respaldada por Supabase y la API de Google Gemini.
+
 ```mermaid
 graph TD
-    subgraph Cliente ["Capa de Presentación (Frontend)"]
-        UI["Interfaz Web (HTML5 / CSS3 / JavaScript)"]
+    subgraph Capa_Presentacion ["Capa de Presentación (Frontend)"]
+        UI ["Interfaz Web Adaptativa (HTML5 / CSS3 / JS)"]
     end
 
-    subgraph Backend ["Servidor Principal (Monolito Modular en Python / FastAPI)"]
-        Router["Enrutador de Peticiones HTTP/REST"]
-        
-        subgraph Modulos ["Módulos de Dominio (Desacoplados)"]
-            ModAuth["Módulo de Autenticación y Roles"]
-            ModCursos["Módulo de Gestión de Cursos y Secciones"]
-            ModEval["Módulo de Evaluación y Banco de Preguntas"]
-            ModIA["Módulo de Integración con IA (Orquestador Gemini en Python)"]
-            ModStats["Módulo de Analíticas y Reportes"]
-        end
-    end
-
-    subgraph ServiciosExt ["Servicios Externos y Persistencia"]
-        Supabase[("Supabase: PostgreSQL & Auth")]
-        GeminiAPI["Google Gemini 1.5 Flash API"]
-    end
-
-    %% Relaciones de conexión
     UI -->|Peticiones HTTPS / JSON| Router
-    Router --> ModAuth
-    Router --> ModCursos
-    Router --> ModEval
-    Router --> ModIA
-    Router --> ModStats
 
-    ModAuth -->|Validación Tokens| Supabase
-    ModCursos -->|CRUD Cursos/Secciones| Supabase
-    ModEval -->|Consultas / Respuestas| Supabase
-    ModIA -->|Llamadas con Prompt Estructurado| GeminiAPI
-    ModIA -->|Guarda Caché de Tutorías| Supabase
-    ModStats -->|Lectura de Resultados| Supabase
+    subgraph Monolito_Modular ["Servidor Principal (Monolito Modular en Python / FastAPI)"]
+        Router ["Enrutador de Peticiones HTTP / REST"]
+        
+        subgraph Modulos_Dominio ["Módulos de Dominio (Desacoplados)"]
+            M_Auth ["Módulo de Autenticación y Perfiles"]
+            M_Comp ["Módulo de Competencias e Instituciones"]
+            M_Eval ["Módulo de Evaluación (Libre y Simulacro)"]
+            M_AI ["Módulo Orquestador de IA (Gemini API)"]
+            M_Metrics ["Módulo de Analíticas e Historial"]
+        end
+
+        Router --> M_Auth
+        Router --> M_Comp
+        Router --> M_Eval
+        Router --> M_AI
+        Router --> M_Metrics
+    end
+
+    subgraph Servicios_Persistencia ["Servicios Externos y Persistencia"]
+        DB [("Supabase: PostgreSQL & Auth")]
+        Gemini ["Google Gemini API (Tutoría de Descarte)"]
+    end
+
+    M_Auth -->|Validación de Tokens| DB
+    M_Comp -->|Consulta Estructura ICFES| DB
+    M_Eval -->|Banco de Preguntas y Respuestas| DB
+    M_Metrics -->|Lectura/Escritura de Métricas| DB
+    M_AI -->|Guarda / Consulta Caché de Tutorías| DB
+    M_AI -->|Prompts Estructurados| Gemini
 ```
 
 ---
