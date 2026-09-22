@@ -6,7 +6,6 @@ router = APIRouter(
     tags=["Módulo Adaptativo (IA)"]
 )
 
-# Un endpoint de prueba específico para este módulo
 @router.post("/generar-tutoria")
 def generar_tutoria():
     return {

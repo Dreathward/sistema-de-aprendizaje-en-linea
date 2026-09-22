@@ -142,7 +142,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
-# Python y entornos virtuales (CRÍTICO)
+# Python y entornos virtuales
 venv/
 __pycache__/
 *.pyc
@@ -152,5 +152,5 @@ __pycache__/
 # Variables de entorno
 .env
 
-# Base de datos local (por si acaso prueban algo offline)
+# Base de datos local
 *.sqlite3
