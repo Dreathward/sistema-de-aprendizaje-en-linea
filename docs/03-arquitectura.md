@@ -80,3 +80,75 @@ La infraestructura tecnológica del proyecto se fundamenta en un conjunto de tec
 * **Backend (Servidor de Aplicación):** Construido en Python utilizando el framework **FastAPI**. Su estructura interna sigue el patrón de carpetas por módulo (`src/modules/...`), permitiendo mantener un enrutamiento REST liviano, asíncrono y de alto rendimiento para el procesamiento de payloads de evaluación.
 * **Base de Datos y Persistencia:** Administrada mediante **Supabase** respaldado por PostgreSQL. El esquema relacional almacena la gestión de usuarios, el banco de preguntas categorizado por competencias del ICFES, las respuestas enviadas en cada intento y la tabla de caché para almacenar las tutorías generadas.
 * **Proveedor de Inteligencia Artificial:** Integrado con la API de **Google Gemini** (modelo Gemini 1.5 Flash) a través de la librería oficial `google-genai` en Python. Su selección responde a sus bajos tiempos de latencia, eficiencia en cuotas de uso y alta capacidad para procesar instrucciones complejas de descarte pedagógico.
+
+```mermaid
+classDiagram
+    %% Capa Principal
+    class FastAPI_Main {
+        +String title
+        +String version
+        +include_router()
+    }
+
+    %% Módulo de Evaluación
+    class EntregaTaller {
+        +int id_estudiante
+        +String id_seccion
+        +List~RespuestaEstudiante~ respuestas
+    }
+    class RespuestaEstudiante {
+        +int id_pregunta
+        +String respuesta_seleccionada
+    }
+    EntregaTaller "1" *-- "*" RespuestaEstudiante : contiene
+
+    class EvaluacionRouter {
+        +obtener_taller(id_seccion: String) JSON
+        +procesar_entrega(entrega: EntregaTaller) JSON
+    }
+    EvaluacionRouter ..> EntregaTaller : valida con
+
+    %% Módulo IA
+    class TutorDescarteRequest {
+        +String competencia
+        +String pregunta_enunciado
+        +String opcion_correcta
+        +String distractor_elegido
+    }
+    
+    class IARouter {
+        +generar_tutoria_descarte(request: TutorDescarteRequest) JSON
+    }
+    
+    class ServicioGemini {
+        -String MODELO_ACTUAL = "gemini-3.5-flash"
+        -String api_key
+        +orquestar_prompt(datos: TutorDescarteRequest) String
+        +llamar_api() JSON
+    }
+    IARouter ..> TutorDescarteRequest : valida con
+    IARouter --> ServicioGemini : delega ejecución
+
+    %% Módulo Auth
+    class UsuarioLogin {
+        +String correo
+        +String password
+    }
+    class AuthRouter {
+        +login(credenciales: UsuarioLogin) JSON
+        +registro() JSON
+    }
+    AuthRouter ..> UsuarioLogin : valida con
+
+    %% Módulo Competencias
+    class CompetenciasRouter {
+        +obtener_asignaturas() JSON
+        +obtener_secciones(id_grado: int) JSON
+    }
+    
+    %% Relaciones de Inyección de Dependencias
+    FastAPI_Main --> AuthRouter : incluye
+    FastAPI_Main --> CompetenciasRouter : incluye
+    FastAPI_Main --> EvaluacionRouter : incluye
+    FastAPI_Main --> IARouter : incluye
+```
