@@ -154,3 +154,5 @@ __pycache__/
 
 # Base de datos local
 *.sqlite3
+
+.env
