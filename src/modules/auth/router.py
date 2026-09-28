@@ -3,25 +3,25 @@ from pydantic import BaseModel, EmailStr
 
 router = APIRouter(prefix="/auth", tags=["Módulo de Autenticación y Roles"])
 
-# Contratos de datos (Lo que esperamos recibir del frontend)
+# Contratos de datos (schemas) para las solicitudes de inicio de sesión y registro
 class UsuarioLogin(BaseModel):
-    correo: EmailStr # Valida automáticamente que tenga un formato de email válido
+    correo: EmailStr # Validación de correo electrónico
     password: str
 
 class UsuarioRegistro(BaseModel):
     nombre: str
     correo: EmailStr
     password: str
-    rol: str # Esperamos "docente" o "estudiante"
-    grado: str | None = None # Opcional ya que solo aplica si el rol es estudiante
+    rol: str
+    grado: str | None = None # Opcional (aplicable solo para estudiantes)
 
-# Endpoint de Inicio de Sesión
+# Endpoint para iniciar sesión
 @router.post("/login")
 def iniciar_sesion(credenciales: UsuarioLogin):
 
-    # Hay que reemplazar esto en el futuro con la consulta real a Supabase
+    # Reemplazamos la lógica de autenticación con una simulación de base de datos
     
-    # Simulamos un docente exitoso
+    # Simulación de un docente exitoso
     if credenciales.correo == "profe@colegio.edu.co" and credenciales.password == "123456":
         return {
             "estado": "éxito",
@@ -32,7 +32,7 @@ def iniciar_sesion(credenciales: UsuarioLogin):
             }
         }
     
-    # Simulamos un estudiante exitoso
+    # Simulación de un estudiante exitoso
     if credenciales.correo == "alumno@colegio.edu.co" and credenciales.password == "123456":
         return {
             "estado": "éxito",
@@ -44,14 +44,14 @@ def iniciar_sesion(credenciales: UsuarioLogin):
             }
         }
 
-    # Si no es ninguno de los de prueba, lanzamos error 401 (No Autorizado)
+    # Si no es válido en ninguno de los casos anteriores, se lanza un error de autenticación (401 - No Autorizado)
     raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
-# Endpoint de Registro
+# Endpoint de registro de usuario
 @router.post("/registro")
 def registrar_usuario(nuevo_usuario: UsuarioRegistro):
 
-    # Aquí irá el código para insertar en PostgreSQL
+    # A futuro, aquí se implementará la lógica para almacenar el nuevo usuario en la base de datos.
     
     return {
         "estado": "éxito",

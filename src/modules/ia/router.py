@@ -9,7 +9,7 @@ client = genai.Client()
 
 router = APIRouter(prefix="/ia", tags=["Módulo Orquestador de IA"])
 
-# Contrato de datos (lo que el Frontend va a enviar)
+# Contrato de datos para recibir la solicitud de tutoría
 class PeticionTutor(BaseModel):
     competencia: str
     pregunta_enunciado: str
@@ -43,7 +43,7 @@ def generar_tutoria_descarte(peticion: PeticionTutor):
         return {
             "estado": "éxito",
             "explicacion_ia": response.text,
-            "origen": "generado_por_api" # Mas adelante cambiaremos esto cuando leamos   la Caché
+            "origen": "generado_por_api" # Cuando se integre con la base de datos, se podrá indicar si fue generado por IA o recuperado de la base de datos
         }
 
     except Exception as e:

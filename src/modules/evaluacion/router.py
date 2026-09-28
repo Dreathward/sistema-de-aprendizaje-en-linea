@@ -49,10 +49,10 @@ def obtener_taller(id_seccion: str):
 @router.post("/entregar")
 def procesar_entrega(entrega: EntregaTaller):
 
-    # Aquí irá la lógica pesada en el Sprint 5 para calificar y llamar a Gemini si hay errores
+    # Aquí se implementará la lógica para almacenar las respuestas del estudiante en la base de datos y realizar el análisis de IA.
     
     return {
         "estado": "éxito",
         "mensaje": f"Taller recibido correctamente del estudiante {entrega.id_estudiante} de la sección {entrega.id_seccion}.",
-        "analisis_ia": "Pendiente de integración en el Sprint 5"
+        "analisis_ia": "Próximamente..."
     }

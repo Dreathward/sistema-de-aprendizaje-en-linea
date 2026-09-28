@@ -6,11 +6,11 @@ from src.modules.evaluacion.router import router as evaluacion_router
 from src.modules.stats.router import router as stats_router
 
 app = FastAPI(
-    title="API - Sistema de Aprendizaje con IA Adaptativa",
+    title="Sistema de Aprendizaje con IA Adaptativa",
     version="1.0.0"
 )
 
-# Registramos TODOS los submódulos aquí
+# Submdódulos (routers) de la aplicación
 app.include_router(ia_router)
 app.include_router(auth_router)
 app.include_router(competencias_router)
@@ -19,4 +19,4 @@ app.include_router(stats_router)
 
 @app.get("/")
 def health_check():
-    return {"estado": "Online", "mensaje": "El servidor de Thomas y Jeison está funcionando."}
+    return {"estado": "Online", "mensaje": "El servidor está funcionando."}
