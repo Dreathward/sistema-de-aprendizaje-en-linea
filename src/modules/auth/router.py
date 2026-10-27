@@ -1,11 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
+from supabase import create_client, Client
+
+# Configuración y conexión con Supabase
+SUPABASE_URL = "https://vxsfvnhxzpaxcsridczy.supabase.co"
+SUPABASE_KEY = "sb_publishable_yuMWHTMIWVM1peup5yfwLw_CuGpz2Tn"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 router = APIRouter(prefix="/auth", tags=["Módulo de Autenticación y Roles"])
 
-# Contratos de datos (schemas) para las solicitudes de inicio de sesión y registro
+# Contratos de datos (schemas)
 class UsuarioLogin(BaseModel):
-    correo: EmailStr # Validación de correo electrónico
+    correo: EmailStr
     password: str
 
 class UsuarioRegistro(BaseModel):
@@ -13,47 +19,64 @@ class UsuarioRegistro(BaseModel):
     correo: EmailStr
     password: str
     rol: str
-    grado: str | None = None # Opcional (aplicable solo para estudiantes)
+    grado: str | None = None
 
-# Endpoint para iniciar sesión
+# Endpoint para iniciar sesión conectado a Supabase
 @router.post("/login")
 def iniciar_sesion(credenciales: UsuarioLogin):
+    try:
+        # Consulta en la tabla 'usuarios' por correo electrónico
+        res = supabase.table("usuarios").select("*").eq("correo", credenciales.correo).execute()
+        usuarios = res.data
 
-    # Reemplazamos la lógica de autenticación con una simulación de base de datos
-    
-    # Simulación de un docente exitoso
-    if credenciales.correo == "profe@colegio.edu.co" and credenciales.password == "123456":
+        # Validar si el usuario existe
+        if not usuarios:
+            raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+
+        usuario_db = usuarios[0]
+
+        # Validar contraseña (soporta campo 'password' o 'contrasena')
+        password_db = usuario_db.get("password") or usuario_db.get("contrasena")
+        if password_db != credenciales.password:
+            raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+
+        # Retornar el payload esperado por el frontend
         return {
             "estado": "éxito",
-            "token_sesion": "simulacion_de_token_seguro_123",
+            "token_sesion": f"token_seguro_{usuario_db.get('id', 'temp')}",
             "usuario": {
-                "nombre": "Julián Prado",
-                "rol": "docente"
+                "nombre": usuario_db.get("nombre", "Estudiante"),
+                "rol": usuario_db.get("rol", "estudiante"),
+                "grado": usuario_db.get("grado", "11")
             }
         }
-    
-    # Simulación de un estudiante exitoso
-    if credenciales.correo == "alumno@colegio.edu.co" and credenciales.password == "123456":
-        return {
-            "estado": "éxito",
-            "token_sesion": "simulacion_de_token_seguro_456",
-            "usuario": {
-                "nombre": "Thomas",
-                "rol": "estudiante",
-                "grado": "11-A"
-            }
-        }
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al conectar con la base de datos: {str(e)}"
+        )
 
-    # Si no es válido en ninguno de los casos anteriores, se lanza un error de autenticación (401 - No Autorizado)
-    raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
-
-# Endpoint de registro de usuario
+# Endpoint de registro persistente en Supabase
 @router.post("/registro")
 def registrar_usuario(nuevo_usuario: UsuarioRegistro):
-
-    # A futuro, aquí se implementará la lógica para almacenar el nuevo usuario en la base de datos.
-    
-    return {
-        "estado": "éxito",
-        "mensaje": f"El {nuevo_usuario.rol} {nuevo_usuario.nombre} fue registrado correctamente."
-    }
+    try:
+        payload = {
+            "nombre": nuevo_usuario.nombre,
+            "correo": nuevo_usuario.correo,
+            "password": nuevo_usuario.password,
+            "rol": nuevo_usuario.rol,
+            "grado": nuevo_usuario.grado
+        }
+        res = supabase.table("usuarios").insert(payload).execute()
+        
+        return {
+            "estado": "éxito",
+            "mensaje": f"El {nuevo_usuario.rol} {nuevo_usuario.nombre} fue registrado correctamente."
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al registrar usuario en la base de datos: {str(e)}"
+        )
