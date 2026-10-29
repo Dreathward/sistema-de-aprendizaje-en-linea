@@ -1,16 +1,17 @@
 import os
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
+from src.database import supabase
 
 load_dotenv()
 client = genai.Client()
 
 router = APIRouter(prefix="/ia", tags=["Módulo Orquestador de IA"])
 
-# Contrato de datos para recibir la solicitud de tutoría
 class PeticionTutor(BaseModel):
+    id_pregunta: str
     competencia: str
     pregunta_enunciado: str
     opcion_correcta: str
@@ -18,8 +19,20 @@ class PeticionTutor(BaseModel):
 
 @router.post("/tutor-descarte")
 def generar_tutoria_descarte(peticion: PeticionTutor):
+    llave_cache = f"{peticion.id_pregunta}_{peticion.distractor_elegido}"
+    
     try:
-        # Prompt basado en la lógica de descarte ICFES
+        # Buscar en Supabase si esta explicación ya se generó antes
+        res = supabase.table("ia_cache").select("explicacion").eq("llave", llave_cache).execute()
+        
+        if res.data:
+            return {
+                "estado": "éxito",
+                "explicacion_ia": res.data[0]["explicacion"],
+                "origen": "cache_db"
+            }
+
+        # Si no existe en la base de datos, construimos el prompt y llamamos a Gemini
         prompt = f"""
         Actúa como un tutor experto en preparación para las Pruebas Saber (ICFES) en la competencia de {peticion.competencia}.
         
@@ -36,15 +49,23 @@ def generar_tutoria_descarte(peticion: PeticionTutor):
         """
 
         response = client.models.generate_content(
-            model='gemini-3-flash-preview',
+            model='gemini-3.5-flash',
             contents=prompt
         )
+        explicacion_generada = response.text
+        
+        # Guardar la nueva explicación en Supabase para futuras consultas
+        supabase.table("ia_cache").insert({
+            "llave": llave_cache,
+            "explicacion": explicacion_generada
+        }).execute()
 
         return {
             "estado": "éxito",
-            "explicacion_ia": response.text,
-            "origen": "generado_por_api" # Cuando se integre con la base de datos, se podrá indicar si fue generado por IA o recuperado de la base de datos
+            "explicacion_ia": explicacion_generada,
+            "origen": "generado_por_api" 
         }
 
     except Exception as e:
-        return {"estado": "error", "mensaje": str(e)}
+        print(f"DEBUG ERROR IA/DB: {repr(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en IA o Base de Datos: {str(e)}")
