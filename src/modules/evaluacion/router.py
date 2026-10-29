@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from src.database import supabase
+from src.modules.auth.router import verificar_token
 
-router = APIRouter(prefix="/evaluacion", tags=["Módulo de Evaluación y Banco de Preguntas"])
+router = APIRouter(
+    prefix="/evaluacion", 
+    tags=["Módulo de Evaluación y Banco de Preguntas"],
+    dependencies=[Depends(verificar_token)]
+)
 
 # Contratos de datos
 class RespuestaEstudiante(BaseModel):

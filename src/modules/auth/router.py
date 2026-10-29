@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from supabase import create_client, Client
+from fastapi import Header, HTTPException
 
 # Conexión con Supabase
 SUPABASE_URL = "https://vxsfvnhxzpaxcsridczy.supabase.co"
@@ -20,6 +21,9 @@ class UsuarioRegistro(BaseModel):
     password: str
     rol: str = "student"
     grado: str | None = None
+
+class RecuperarPassword(BaseModel):
+    correo: EmailStr
 
 
 @router.post("/login")
@@ -93,3 +97,35 @@ def registrar_usuario(nuevo_usuario: UsuarioRegistro):
             status_code=500,
             detail=f"Error al registrar usuario en la base de datos: {str(e)}"
         )
+
+@router.post("/recuperar-password")
+def solicitar_recuperacion(datos: RecuperarPassword):
+    try:
+        # Verificar si el correo existe en la tabla de Supabase
+        res = supabase.table("users").select("id, name").eq("email", datos.correo).execute()
+        
+        # Práctica de seguridad de retornar éxito incluso si el correo no existe
+        if not res.data:
+            return {
+                "estado": "éxito",
+                "mensaje": "Si el correo está registrado, recibirás las instrucciones de recuperación."
+            }
+            
+        usuario = res.data[0]
+        
+        # Generar un token temporal (Mockup, luego se puede guardar en una tabla 'password_resets')
+        token_recuperacion = f"reset_{usuario['id']}_xyz789"
+        
+        # A futuro: Integrar librería para enviar correos (ej. smtplib o Resend)
+        # Por ahora, simulamos el envío devolviendo el enlace en consola o en modo debug
+        print(f"ENVIANDO CORREO A {datos.correo} -> Enlace: http://localhost:8000/restablecer?token={token_recuperacion}")
+        
+        return {
+            "estado": "éxito",
+            "mensaje": "Si el correo está registrado, recibirás las instrucciones de recuperación.",
+            "debug_token": token_recuperacion
+        }
+        
+    except Exception as e:
+        print(f"DEBUG ERROR RECUPERACIÓN: {repr(e)}")
+        raise HTTPException(status_code=500, detail="Error interno al procesar la solicitud.")
