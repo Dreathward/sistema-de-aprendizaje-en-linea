@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Panel Principal - Sistema de Aprendizaje Virtual</title>
+    
+    <!-- Conexión a los servidores de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Importación de la fuente "Poppins"-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/dashboard-estudiante.css">
+
+</head>
+<body>
+    <header class="barra-superior">
+
+        <!-- Logo y Título -->
+        <div class="zona-logo">
+            <div class="icono-logo-temp"></div>
+            <div class="textos-logo">
+                <h1 class="titulo-logo">Saber 9/11</h1>
+                <p class="subtitulo-logo">Plataforma de preparación ICFES</p>
+            </div>
+        </div>
+
+        <!-- Menú central -->
+        <div class="zona-menu">
+            <a href="#" class="enlace-menu activo">Inicio</a>
+            <a href="#" class="enlace-menu">Simulacros</a>
+            <a href="#" class="enlace-menu">Plan de Estudio</a>
+        </div>
+
+        <!-- Notificaciones y Perfil -->
+        <div class="zona-perfil">
+            <div class="icono-campana-temp"></div>
+            <div class="info-usuario">
+                <div class="avatar-temp">E</div>
+                <div class="textos-usuario">
+                    <span class="nombre-usuario">Estudiante</span>
+                    <span class="grado-usuario">Grado 9/11°</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor-dashboard">
+        <!-- Columna izquierda -->
+        <section class="columna-principal">
+            
+            <!-- Tarjeta de Bienvenida -->
+            <div class="tarjeta-bienvenida">
+                <div class="textos-bienvenida">
+                    <h2 class="titulo-bienvenida">¡Hola Estudiante!</h2>
+                    <p class="subtitulo-bienvenida">Tu meta comienza aquí. Revisa tu progreso</p>
+                </div>
+                <div class="botones-bienvenida">
+                    <button class="btn-primario">Iniciar Simulacro</button>
+                    <button class="btn-secundario">Ver Plan de Estudio</button>
+
+                </div>
+            </div>
+
+            <!-- Fila de Métricas -->
+            <div class="grupo-metricas">
+
+                <!-- Puntaje -->
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Puntaje Global</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <h3 class="metrica-valor">0/500</h3>
+                    <span class="metrica-detalle positivo">+0 puntos</span>
+                </div>
+
+                <!-- Simulacros -->
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Simulacros</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <h3 class="metrica-valor">0 realizados</h3>
+                </div>
+
+                <!-- Racha -->
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Racha</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <h3 class="metrica-valor">0 días seguidos</h3>
+                </div>
+            </div>
+
+            <!-- Módulos de Competencias -->
+            <div class="tarjeta-modulos">
+
+                <!-- Encabezado -->
+                <div class="cabecera-modulos">
+                    <h3 class="titulo-modulos">Módulos de Competencias</h3>
+                    <a href="#" class="enlace-modulos">Ver detalle</a>
+                </div>
+
+                <!-- Lista de materias -->
+                <div class="lista-modulos">
+
+                    <!-- Lectura Crítica -->
+                    <div class="item-modulo">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Lectura Crítica</h4>
+                                <p class="desc-materia">Comprensión y análisis de textos</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <!-- Barra de progreso -->
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%; background-color: gray"></div>
+                        </div>
+                    </div>
+
+                    <!-- Matemáticas -->
+                    <div class="item-modulo">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Matemáticas</h4>
+                                <p class="desc-materia">Razonamiento cuantitativo y lógico</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <!-- Barra de progreso -->
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%; background-color: gray;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sociales y Ciudadanas -->
+                    <div class="item-modulo">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Sociales y Ciudadanas</h4>
+                                <p class="desc-materia">Contexto histórico y participación</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <!-- Barra de progreso -->
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%; background-color: gray;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Ciencias Naturales -->
+                    <div class="item-modulo">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Ciencias Naturales</h4>
+                                <p class="desc-materia">Fenómenos naturales y evidencia</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <!-- Barra de progreso -->
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%; background-color: gray;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Inglés -->
+                    <div class="item-modulo">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Inglés</h4>
+                                <p class="desc-materia">Lectura y comprensión en contexto</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <!-- Barra de progreso -->
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%; background-color: gray;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Columna derecha -->
+        <aside class="columna-lateral">
+            <!-- Historial de TutorIA -->
+            <div class="tarjeta-lateral">
+                <h3 class="titulo-lateral">Historial TutorIA</h3>
+                <p class="subtitulo-lateral">Tus últimas correciones pedagógicas</p>
+
+                <div class="lista-historial">
+
+                    <div class="item-historial">
+                        <div class="cabecera-historial">
+                            <div class="icono-mini-temp"></div>
+                            <h4 class="materia-historial">Lectura Critica</h4>
+                        </div>
+                        <p class="texto-historial">Texto generado por IA</p>
+                        <a href="#" class="enlace-historial">Leer retroalimentación</a>
+                    </div>
+
+                    <div class="item-historial">
+                        <div class="cabecera-historial">
+                            <div class="icono-mini-temp"></div>
+                            <h4 class="materia-historial">Matemáticas</h4>
+                        </div>
+                        <p class="texto-historial">Texto generado por IA</p>
+                        <a href="#" class="enlace-historial">Leer retroalimentación</a>
+                    </div>
+                    
+                    <div class="item-historial">
+                        <div class="cabecera-historial">
+                            <div class="icono-mini-temp"></div>
+                            <h4 class="materia-historial">Sociales y Ciudadanas</h4>
+                        </div>
+                        <p class="texto-historial">Texto generado por IA</p>
+                        <a href="#" class="enlace-historial">Leer retroalimentación</a>
+                    </div>
+
+                    <div class="item-historial">
+                        <div class="cabecera-historial">
+                            <div class="icono-mini-temp"></div>
+                            <h4 class="materia-historial">Ciencias Naturales</h4>
+                        </div>
+                        <p class="texto-historial">Texto generado por IA</p>
+                        <a href="#" class="enlace-historial">Leer retroalimentación</a>
+                    </div>
+
+                    <div class="item-historial">
+                        <div class="cabecera-historial">
+                            <div class="icono-mini-temp"></div>
+                            <h4 class="materia-historial">Inglés</h4>
+                        </div>
+                        <p class="texto-historial">Texto generado por IA</p>
+                        <a href="#" class="enlace-historial">Leer retroalimentación</a>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Próximas Evaluaciones -->
+            <div class="tarjeta-lateral">
+                <h3 class="titulo-lateral">Próximas Evaluaciones</h3>
+
+                <div class="item-evaluacion">
+                    <div class="cabecera-evaluacion">
+                        <div class="icono-mini-temp"></div>
+                        <div class="textos-evaluacion">
+                            <h4 class="titulo-evaluacion">Simulacro General/Competencia Específica</h4>
+                            <p class="desc-evaluacion">Evaluación completa/parcial con/sin retroalimentación</p>
+                        </div>
+                        <span class="etiqueta-hoy">Hoy</span>
+                    </div>
+                    <div class="pie-evaluacion">
+                        <span class="texto-tiempo">00:00 - Tiempo estimado de prueba: 0 horas</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <footer class="pie-pagina">
+
+        <!-- Proyecto -->
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">PROYECTO ACADÉMICO</span>
+            <span class="texto-footer">Ingeniería de Software II</span>
+            <span class="texto-footer">Universidad Antonio Nariño</span>
+        </div>
+
+        <!-- Desarrolladores y año -->
+        <div class="bloque-footer centrado">
+            <span class="etiqueta-footer">DESARROLLADO POR</span>
+            <span class="texto-footer">Jhon Alexander Pérez Llerena</span>
+            <span class="texto-footer">Samuel Thomas Monroy Pérez</span>
+            <span class="texto-footer">Andrés Felipe Paez Díaz</span>
+            <span class="texto-footer">Jeison Stiven Niño Rojas</span>
+            <span class="texto-footer resaltado">© 2026</span>
+        </div>
+
+        <!-- Docente -->
+        <div class="bloque-footer derecha">
+            <span class="etiqueta-footer">DOCENTE</span>
+            <span class="texto-footer">Julián Alberto Prado Sánchez</span>
+        </div>
+
+    </footer>
+</body>
+</html>

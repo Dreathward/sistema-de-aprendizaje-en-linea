@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from src.database import supabase
-from src.modules.auth.router import verificar_token
+from src.modules.auth.Security import verificar_token
 
 router = APIRouter(
     prefix="/evaluacion", 

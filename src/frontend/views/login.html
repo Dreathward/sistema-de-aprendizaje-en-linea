@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Login - Sistema de Aprendizaje Virtual</title>
+    
+    <!-- Conexión a los servidores de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Importación de la fuente "Poppins"-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Hoja de estilos para Login-->
+    <link rel="stylesheet" href="../css/login.css">
+
+</head>
+<body>
+    <main class="contenedor-principal">
+
+        <section class="lado-izquierdo">
+
+            <!-- Texto de arriba -->
+            <div class="bloque-superior">
+                <h1 class="titulo-sistema">Sistema de Aprendizaje Virtual</h1>
+                <h2 class="subtitulo-sistema">Preparación para Pruebas ICFES</h2>
+                <p class="descripcion-sistema">
+                    Aprende a tu ritmo, practica con propósito y llega con confianza al día de la prueba.
+                </p>
+            </div>
+
+            <!-- Texto de abajo -->
+            <div class="bloque-inferior">
+                <h3 class="titulo-meta">Tu meta comienza aquí.</h3>
+                <p class="detalle-meta">Contenido educativo y seguimiento personalizado.</p>
+            </div>
+            
+        </section>
+
+        <section class="lado-derecho">
+
+            <div class="tarjeta-acceso">
+
+                <!-- Texto de encabezado -->
+                <div class="tarjeta-encabezado">
+                    <div class="icono-tarjeta">
+                        <img src="../assets/icono-credencial.svg" alt="Icono de acceso" width="26" height="26">
+                    </div>
+                    <h2 id="titulo-tarjeta" class="tarjeta-titulo">Inicia sesión</h2>
+                    <p id="subtitulo-tarjeta" class="tarjeta-subtitulo">Ingresa tus credenciales para continuar con tu aprendizaje</p>
+                </div>
+
+                <!-- Caja de alerta de error -->
+                <div id="caja-alerta" class="alerta-error oculto">
+                    <h4 class="alerta-titulo">Error de autenticación</h4>
+                    <p id="mensaje-alerta" class="alerta-mensaje">
+                        Las credenciales ingresadas no coinciden o la cuenta no ha sido registrada en el sistema.
+                    </p>
+                    <ul class="alerta-lista">
+                        <li>Verificar que el usuario y la contraseña estén bien escritos.</li>
+                        <li>Asegurarse de que el usuario haya sido creado previamente por el administrador.</li>
+                    </ul>
+                </div>
+
+                <!-- Formulario de acceso -->
+                <form id="formulario-login" class="formulario-acceso">
+
+                    <!-- Campo para el usuario -->
+                    <div class="grupo-campo">
+                        <label for="correo" class="etiqueta-campo">Correo institucional</label>
+                        <input
+                            type="email"
+                            id="correo"
+                            class="campo-entrada"
+                            placeholder="Ej. alumno@colegio.edu.co"
+                            required
+                        >
+                    </div>
+
+                    <!-- Campo para la contraseña -->
+                    <div class="grupo-campo">
+                        <label for="password" class="etiqueta-campo">Contraseña</label>
+                        <input
+                            type="password"
+                            id="password"
+                            class="campo-entrada"
+                            placeholder="••••••••"
+                        >
+                    </div>
+
+                    <!-- Botón de envio -->
+                    <button type="submit" id="boton-ingreso" class="boton-ingresar">Entrar</button>
+
+                    <!-- Enlace de recuperación -->
+                    <a href="#" id="enlace-ayuda" class="enlace-olvido">¿Olvidaste tu contraseña?</a>
+
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../js/login.js"></script>
+
+</body>
+</html>

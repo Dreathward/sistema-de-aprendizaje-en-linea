@@ -31,20 +31,22 @@ app.include_router(competencias_router)
 app.include_router(evaluacion_router)
 app.include_router(stats_router)
 
-# 2. Montar archivos estáticos del frontend (JS, CSS, Vistas)
+# Montaje de archivos estáticos del frontend (HTML, CSS y JavaScript)
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend")
 if os.path.exists(frontend_path):
     app.mount("/src/frontend", StaticFiles(directory=frontend_path), name="frontend")
     app.mount("/views", StaticFiles(directory=os.path.join(frontend_path, "views")), name="views")
     app.mount("/js", StaticFiles(directory=os.path.join(frontend_path, "js")), name="js")
+    app.mount("/css", StaticFiles(directory=os.path.join(frontend_path, "css")), name="css")
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
-# 3. Entrega de la interfaz gráfica principal en la ruta raíz (/)
+# Entrega de la interfaz gráfica principal en la ruta raíz (/)
 @app.get("/")
 def read_root():
-    index_path = os.path.join(frontend_path, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {"estado": "Online", "mensaje": "Frontend no encontrado en src/frontend/index.html"}
+    login_path = os.path.join(frontend_path, "views", "login.html")
+    if os.path.exists(login_path):
+        return FileResponse(login_path)
+    return {"estado": "Online", "mensaje": "Vista de login no encontrada en src/frontend/views/login.html"}
 
 @app.get("/health")
 def health_check():

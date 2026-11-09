@@ -1,0 +1,210 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins',sans-serif;
+}
+
+.contenedor-principal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+
+    background-image:
+        linear-gradient(rgba(10, 25, 60, 0.75), rgba(10, 25, 60, 0.85)),
+        url('../assets/estudiantes.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Portada */
+.lado-izquierdo {
+    color: white;
+    padding: 60px 40px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.titulo-sistema {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+.subtitulo-sistema {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+.descripcion-sistema {
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 420px;
+    opacity: 0.8;
+}
+.titulo-meta {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.detalle-meta {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+/* Formulario */
+.lado-derecho {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.tarjeta-acceso {
+    background-color: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.icono-tarjeta {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+    border: 1px solid lightblue;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+.tarjeta-encabezado {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.tarjeta-titulo {
+    font-size: 26px;
+    font-weight: 700;
+    color: black;
+    margin-bottom: 8px;
+}
+.tarjeta-subtitulo {
+    font-size: 13px;
+    color: gray;
+    line-height: 1.5;
+}
+
+.formulario-acceso {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.etiqueta-campo {
+    text-align: start;
+    font-size: 13px;
+    font-weight: 600;
+    color: black;
+}
+.campo-entrada {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid gray;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2 ease;
+}
+.campo-entrada:focus {
+    border-color: navy;
+    box-shadow: 0 0 6px rgba(0, 0, 128, 0.2);
+}
+
+.boton-ingresar {
+    background-color: navy;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.boton-ingresar:hover {
+    background-color: darkblue;
+}
+.boton-ingresar:active {
+    transform: scale(0.98);
+}
+
+.enlace-olvido {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    text-decoration: none;
+    margin-top: -5px;
+    transition: color 0.2s ease;
+}
+.enlace-olvido:hover {
+    color: navy;
+    text-decoration: underline;
+}
+
+/* Mensaje de error cuando exista error en las credenciales ingresadas */
+.alerta-error {
+    background-color: pink;
+    border: 1px solid crimson;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+.alerta-titulo {
+    font-size: 14px;
+    font-weight: 700;
+    color: darkred;
+    margin-bottom: 6px;
+}
+.alerta-mensaje {
+    font-size: 12px;
+    color: maroon;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+.alerta-lista {
+    font-size: 11px;
+    color: maroon;
+    padding-left: 18px;
+    line-height: 1.5;
+}
+.oculto {
+    display: none;
+}
+
+/* Responsive para pantallas de celulares */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        grid-template-columns: 1fr;
+    }
+    .lado-izquierdo {
+        display: none;
+    }
+    .lado-derecho {
+        padding: 20px;
+    }
+}
