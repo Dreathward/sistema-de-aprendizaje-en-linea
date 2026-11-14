@@ -3,7 +3,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
-
 from src.modules.ia.router import router as ia_router
 from src.modules.auth.router import router as auth_router
 from src.modules.competencias.router import router as competencias_router
