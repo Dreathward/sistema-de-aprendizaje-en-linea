@@ -18,6 +18,77 @@ def _clasificar_nivel_icfes(promedio: float) -> str:
         return "Básico"
     return "Bajo (Requiere refuerzo)"
 
+def _calcular_scores_por_competencia(entregas: list, ws_map: dict, comp_names_map: dict) -> dict:
+    sub_ids = [s["id"] for s in entregas if s.get("id")]
+    ans_por_sub = {}
+    q_map = {}
+    correctas_por_q = {}
+
+    if sub_ids:
+        res_ans = (
+            supabase.table("student_answer")
+            .select("submission_id, question_id, selected_answer")
+            .in_("submission_id", sub_ids)
+            .execute()
+        )
+        ans_list = res_ans.data or []
+        for a in ans_list:
+            ans_por_sub.setdefault(a["submission_id"], []).append(a)
+
+        q_ids = list({a["question_id"] for a in ans_list if a.get("question_id")})
+        if q_ids:
+            res_q = (
+                supabase.table("question")
+                .select("id, competence_id, workshop_id")
+                .in_("id", q_ids)
+                .execute()
+            )
+            q_map = {q["id"]: q for q in (res_q.data or [])}
+
+            res_opt = (
+                supabase.table("question_option")
+                .select("question_id, option_text, is_correct")
+                .in_("question_id", q_ids)
+                .execute()
+            )
+            for op in (res_opt.data or []):
+                if op.get("is_correct"):
+                    correctas_por_q.setdefault(op["question_id"], set()).add(
+                        (op.get("option_text") or "").strip()
+                    )
+
+    scores_por_comp = {}
+    for sub in entregas:
+        sid = sub.get("id")
+        ws = ws_map.get(sub.get("workshop_id"), {})
+        sub_answers = ans_por_sub.get(sid, [])
+
+        if sub_answers:
+            conteo_sub = {}
+            for a in sub_answers:
+                qid = a.get("question_id")
+                q_info = q_map.get(qid, {})
+                cid = q_info.get("competence_id") or ws.get("competence_id")
+                if not cid:
+                    continue
+                marcada = (a.get("selected_answer") or "").strip()
+                es_ok = marcada in correctas_por_q.get(qid, set())
+                par = conteo_sub.setdefault(cid, [0, 0])
+                par[1] += 1
+                if es_ok:
+                    par[0] += 1
+
+            for cid, (ok, tot) in conteo_sub.items():
+                nombre_comp = comp_names_map.get(cid)
+                if nombre_comp and tot > 0:
+                    scores_por_comp.setdefault(nombre_comp, []).append((ok / tot) * 100.0)
+        else:
+            cid = ws.get("competence_id")
+            nombre_comp = comp_names_map.get(cid)
+            if nombre_comp:
+                scores_por_comp.setdefault(nombre_comp, []).append(float(sub.get("score") or 0))
+
+    return scores_por_comp
 
 # Historial Individual de Desempeño
 @router.get("/estudiante/{id_estudiante}")
@@ -36,6 +107,7 @@ def obtener_metricas_estudiante(id_estudiante: int, competence_id: int | None = 
                     "simulacros_completados": 0,
                     "mejor_puntaje": 0.0
                 },
+                "promedio_por_competencia": [],
                 "historial": []
             }
 
@@ -78,6 +150,17 @@ def obtener_metricas_estudiante(id_estudiante: int, competence_id: int | None = 
         total = len(puntajes_filtrados)
         promedio = sum(puntajes_filtrados) / total if total > 0 else 0.0
         mejor = max(puntajes_filtrados) if total > 0 else 0.0
+        
+        comp_names_map = {c["id"]: c["name"] for c in res_comps.data}
+        scores_por_comp = _calcular_scores_por_competencia(entregas, workshops_map, comp_names_map)
+        promedio_por_competencia = [
+            {
+                "competencia": comp,
+                "promedio": round(sum(vals) / len(vals), 2),
+                "total_entregas": len(vals)
+            }
+            for comp, vals in scores_por_comp.items()
+        ]
 
         return {
             "estado": "éxito",
@@ -87,6 +170,7 @@ def obtener_metricas_estudiante(id_estudiante: int, competence_id: int | None = 
                 "mejor_puntaje": round(mejor, 2),
                 "nivel_proyectado": _clasificar_nivel_icfes(promedio)
             },
+            "promedio_por_competencia": promedio_por_competencia,
             "historial": historial
         }
     except Exception as e:
@@ -114,7 +198,7 @@ def obtener_reporte_docente(teacher_id: int, team_id: int | None = Query(default
         team_ids = [t["id"] for t in res_teams.data]
 
         # Estudiantes del grupo
-        res_links = supabase.table("alumn_team").select("team_id, alumn_id").in_("team_id", team_ids).execute()
+        res_links = supabase.table("alum_team").select("team_id, alumn_id").in_("team_id", team_ids).execute()
         alumn_ids = list({l["alumn_id"] for l in res_links.data})
 
         alumns_map = {}
@@ -140,12 +224,8 @@ def obtener_reporte_docente(teacher_id: int, team_id: int | None = Query(default
             res_subs = supabase.table("submission").select("*").in_("workshop_id", ws_ids).execute()
             entregas = res_subs.data
 
-        # Promedio por competencia
-        scores_por_comp = {}
-        for sub in entregas:
-            ws = ws_map.get(sub["workshop_id"], {})
-            nombre_comp = comps_map.get(ws.get("competence_id"), ws.get("topic", "General"))
-            scores_por_comp.setdefault(nombre_comp, []).append(float(sub.get("score") or 0))
+        # Promedio por competencia (desglosando preguntas en simulacros generales)
+        scores_por_comp = _calcular_scores_por_competencia(entregas, ws_map, comps_map)
 
         promedio_competencias = [
             {

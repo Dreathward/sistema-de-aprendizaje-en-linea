@@ -106,11 +106,14 @@ def generar_tutoria_descarte(peticion: PeticionTutor):
             )
 
         # Guardar en 'ia_cache' para futuros estudiantes con el mismo error
-        supabase.table("ia_cache").insert({
-            "question_id": peticion.id_pregunta,
-            "selected_distractor": distractor_limpio,
-            "explanation": explicacion_generada
-        }).execute()
+        try:
+            supabase.table("ia_cache").insert({
+                "question_id": peticion.id_pregunta,
+                "selected_distractor": distractor_limpio,
+                "explanation": explicacion_generada
+            }).execute()
+        except Exception as cache_err:
+            print(f"AVISO CACHE IA: {repr(cache_err)}")
 
         # 5egistrar trazabilidad en 'ia_interaction' si la tabla está disponible
         try:

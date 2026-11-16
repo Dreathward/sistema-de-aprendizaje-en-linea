@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulacro Diagnóstico - Saber 9/11</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/simulacro.css">
+</head>
+<body>
+    <!-- Barra superior estilo Figma -->
+    <header class="barra-superior">
+        <div class="zona-logo">
+            <div class="icono-logo-temp"></div>
+            <div class="textos-logo">
+                <h1 class="titulo-logo">Saber 9/11</h1>
+                <p class="subtitulo-logo">Plataforma de preparación ICFES</p>
+            </div>
+        </div>
+
+        <div class="zona-acciones-header">
+            <div class="pill-usuario">
+                <span class="avatar-mini" id="avatar-mini">E</span>
+                <span class="nombre-mini" id="nombre-mini">Estudiante</span>
+            </div>
+            <button type="button" class="btn-pausar-salir" id="btn-volver">
+                <span>⏸</span> Pausar / Salir
+            </button>
+        </div>
+    </header>
+
+    <main class="contenedor-principal">
+        <!-- Estado de carga -->
+        <div class="tarjeta-blanca estado-carga" id="estado-carga">
+            <p>Cargando simulacro desde el servidor...</p>
+        </div>
+
+        <!-- VISTA ACTIVA DEL SIMULACRO (Diseño Figma 2 columnas) -->
+        <section class="vista-simulacro oculto" id="seccion-preguntas">
+            <!-- Tarjeta superior: Título, Temporizador y Barra de Progreso -->
+            <div class="tarjeta-blanca tarjeta-cabecera-prueba">
+                <div class="fila-titulo-timer">
+                    <div>
+                        <h2 class="titulo-simulacro" id="titulo-simulacro">Simulacro Diagnóstico</h2>
+                        <p class="subtitulo-pregunta-actual" id="indicador-pregunta">Pregunta 1 de 1</p>
+                    </div>
+                    <div class="pill-temporizador" id="caja-temporizador">
+                        <span>Tiempo restante:</span>
+                        <strong id="temporizador">45:00</strong>
+                    </div>
+                </div>
+
+                <div class="bloque-progreso">
+                    <div class="textos-progreso">
+                        <span>Progreso del simulacro</span>
+                        <strong class="porcentaje-progreso" id="porcentaje-progreso">0%</strong>
+                    </div>
+                    <div class="barra-progreso-fondo">
+                        <div class="barra-progreso-relleno" id="barra-progreso-relleno" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuadrícula 2 Columnas: Lectura/Contexto (Izquierda) + Pregunta y Opciones (Derecha) -->
+            <div class="grid-dos-columnas">
+                <!-- Columna Izquierda -->
+                <article class="tarjeta-blanca tarjeta-columna">
+                    <div class="cabecera-tarjeta">
+                        <h3 class="titulo-tarjeta" id="titulo-contexto">Contexto y enunciado</h3>
+                        <p class="subtitulo-tarjeta">Lectura obligatoria para responder la pregunta</p>
+                    </div>
+                    <hr class="divisor-sutil">
+                    <div class="cuerpo-lectura" id="texto-lectura"></div>
+                </article>
+
+                <!-- Columna Derecha -->
+                <article class="tarjeta-blanca tarjeta-columna">
+                    <div class="cabecera-tarjeta">
+                        <h3 class="titulo-tarjeta" id="titulo-numero-pregunta">Pregunta 1</h3>
+                        <p class="subtitulo-tarjeta">Lee atentamente el enunciado y selecciona la respuesta correcta</p>
+                    </div>
+                    <hr class="divisor-sutil">
+
+                    <div class="caja-pregunta-destacada" id="texto-pregunta-derecha"></div>
+
+                    <div class="lista-opciones" id="lista-opciones"></div>
+                </article>
+            </div>
+
+            <!-- Barra inferior de navegación -->
+            <div class="barra-navegacion-inferior">
+                <button type="button" class="btn-navegacion-anterior" id="btn-anterior">
+                    ← Anterior
+                </button>
+                <button type="button" class="btn-navegacion-siguiente" id="btn-siguiente">
+                    Siguiente Pregunta →
+                </button>
+            </div>
+        </section>
+
+        <!-- VISTA DE RESULTADOS Y REVISIÓN POST-SIMULACRO -->
+        <section class="vista-resultados oculto" id="seccion-resultados">
+            <div class="tarjeta-blanca tarjeta-resumen-nota">
+                <div class="cabecera-nota">
+                    <div>
+                        <span class="etiqueta-resultado">RESULTADO DEL SIMULACRO</span>
+                        <h2 class="titulo-resultado" id="puntaje-final-texto">0 / 100 puntos</h2>
+                        <p class="detalle-aciertos" id="detalle-aciertos">0 de 0 respuestas correctas</p>
+                    </div>
+                    <button type="button" class="btn-navegacion-siguiente" id="btn-ir-dashboard">
+                        Volver al Dashboard
+                    </button>
+                </div>
+
+                <div class="caja-feedback-general">
+                    <strong>Diagnóstico General TutorIA:</strong>
+                    <p id="texto-feedback-general">Analizando desempeño...</p>
+                </div>
+            </div>
+
+            <h3 class="titulo-seccion-revision">Revisión detallada pregunta por pregunta</h3>
+            <div class="lista-revision" id="lista-revision"></div>
+        </section>
+    </main>
+
+    <!-- MODAL TUTORIA - ANÁLISIS DE DESCARTE (Diseño Figma) -->
+    <div class="fondo-modal oculto" id="modal-tutor-ia">
+        <div class="caja-modal-tutor">
+            <div class="cabecera-modal-tutor">
+                <div class="titulo-modal-con-icono">
+                    <span class="icono-ia-badge">✦</span>
+                    <h3>TutorIA - Análisis de Descarte</h3>
+                </div>
+                <button type="button" class="btn-cerrar-modal" id="btn-cerrar-modal">✕</button>
+            </div>
+
+            <div class="badge-respuesta-incorrecta" id="modal-badge-error">
+                Respuesta incorrecta
+            </div>
+
+            <div class="cuerpo-modal-tutor" id="modal-texto-explicacion">
+                Generando explicación pedagógica...
+            </div>
+
+            <div class="pie-modal-tutor">
+                <button type="button" class="btn-modal-secundario" id="btn-modal-volver">
+                    Volver a revisar
+                </button>
+                <button type="button" class="btn-modal-primario" id="btn-modal-entendido">
+                    Entendido, continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/simulacro.js"></script>
+</body>
+</html>

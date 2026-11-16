@@ -193,7 +193,7 @@ body {
     line-height: 1.5;
 }
 .oculto {
-    display: none;
+    display: none !important;
 }
 
 /* Responsive para pantallas de celulares */
@@ -207,4 +207,131 @@ body {
     .lado-derecho {
         padding: 20px;
     }
+}
+/* Modal Recuperar y Restablecer Contraseña */
+.fondo-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+.caja-modal-recuperar {
+    background-color: white;
+    width: 100%;
+    max-width: 430px;
+    border: 1px solid silver;
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cabecera-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.titulo-modal {
+    font-size: 20px;
+    font-weight: 700;
+    color: black;
+}
+
+.subtitulo-modal {
+    font-size: 12px;
+    color: dimgray;
+    margin-top: 2px;
+}
+
+.btn-cerrar-modal {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: dimgray;
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.btn-cerrar-modal:hover {
+    color: black;
+}
+
+.formulario-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alerta-modal {
+    font-size: 12.5px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid silver;
+}
+
+.alerta-modal.error {
+    background-color: mistyrose;
+    border-color: crimson;
+    color: darkred;
+}
+
+.alerta-modal.exito {
+    background-color: honeydew;
+    border-color: seagreen;
+    color: darkgreen;
+}
+
+.caja-info-token {
+    background-color: aliceblue;
+    border: 1px solid navy;
+    color: black;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 10px 12px;
+    border-radius: 8px;
+    word-break: break-all;
+}
+
+.btn-enlace-secundario {
+    background-color: transparent;
+    border: none;
+    color: navy;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    padding: 4px;
+}
+
+.btn-enlace-secundario:hover {
+    text-decoration: underline;
+}
+.bloque-token-dinamico {
+    border-top: 1px solid silver;
+    padding-top: 15px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.badge-correo-verificado {
+    background-color: whitesmoke;
+    border: 1px solid silver;
+    color: navy;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
 }

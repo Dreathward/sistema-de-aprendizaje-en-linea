@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Docente - Sistema de Aprendizaje Virtual</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard-docente.css">
+</head>
+<body>
+    <header class="barra-superior">
+        <div class="zona-logo">
+            <div class="icono-logo-temp"></div>
+            <div class="textos-logo">
+                <h1 class="titulo-logo">Saber 9/11</h1>
+                <p class="subtitulo-logo">Plataforma de preparación ICFES</p>
+            </div>
+        </div>
+
+        <nav class="zona-menu">
+            <a href="#" class="enlace-menu activo">Inicio</a>
+            <a href="#seccion-competencias" class="enlace-menu">Competencias</a>
+            <a href="#seccion-mapa-calor" class="enlace-menu">Mapa de Calor</a>
+        </nav>
+
+        <div class="zona-perfil">
+            <button type="button" id="boton-notificaciones" class="btn-notificaciones" title="Notificaciones">
+                <img src="../assets/icono-notificaciones.svg" alt="Notificaciones" width="22" height="22">
+                <span id="badge-notificaciones" class="badge-notificaciones oculto">0</span>
+            </button>
+            <div class="info-usuario" id="boton-perfil">
+                <div class="avatar-temp" id="avatar-inicial">D</div>
+                <div class="textos-usuario">
+                    <span class="nombre-usuario" id="nombre-perfil">Docente</span>
+                    <span class="grado-usuario" id="rol-header">Docente ICFES</span>
+                </div>
+            </div>
+
+            <div class="menu-desplegable-perfil oculto" id="menu-perfil">
+                <div class="cabecera-menu-perfil">
+                    <span class="rol-menu-perfil" id="rol-perfil">Cuenta Docente</span>
+                    <span class="correo-menu-perfil" id="correo-perfil">profe@colegio.edu.co</span>
+                </div>
+                <hr class="divisor-menu-perfil">
+                <button type="button" class="opcion-cerrar-sesion" id="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor-dashboard">
+        <!-- Columna Izquierda (Principal) -->
+        <section class="columna-principal">
+            <div class="tarjeta-bienvenida">
+                <div class="textos-bienvenida">
+                    <h2 class="titulo-bienvenida">¡Hola, Docente!</h2>
+                    <p class="subtitulo-bienvenida">Monitorea el desempeño de tus grupos y detecta falencias conceptuales con TutorIA</p>
+                </div>
+                <div class="botones-bienvenida">
+                        <button type="button" class="btn-primario" id="btn-abrir-crear-evaluacion">+ Habilitar Evaluación</button>
+                        <button type="button" class="btn-secundario" id="btn-recargar-analiticas">Actualizar Analíticas</button>
+                        <a href="#seccion-mapa-calor" class="btn-secundario">Ver Mapa de Calor</a>
+                    </div>
+            </div>
+
+            <!-- 3 Tarjetas KPI -->
+            <div class="grupo-metricas">
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Promedio del Grupo</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <p class="metrica-valor" id="kpi-promedio">0/100</p>
+                    <span class="metrica-detalle positivo" id="kpi-nivel">Sin evaluaciones aún</span>
+                </div>
+
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Entregas Evaluadas</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <p class="metrica-valor" id="kpi-entregas">0 entregas</p>
+                    <span class="metrica-detalle positivo">Seguimiento de simulacros</span>
+                </div>
+
+                <div class="tarjeta-metrica">
+                    <div class="metrica-cabecera">
+                        <span class="metrica-titulo">Competencia Crítica</span>
+                        <div class="icono-metrica-temp"></div>
+                    </div>
+                    <p class="metrica-valor" id="kpi-critica">--</p>
+                    <span class="metrica-detalle alerta" id="kpi-critica-detalle">Área prioritaria de refuerzo</span>
+                </div>
+            </div>
+
+            <!-- Rendimiento por Competencias -->
+            <div class="tarjeta-modulos" id="seccion-competencias">
+                <div class="cabecera-modulos">
+                    <div>
+                        <h3 class="titulo-modulos">Rendimiento por Competencia</h3>
+                        <p class="subtitulo-modulo-sec">Promedio de aciertos por área evaluada</p>
+                    </div>
+                    <span class="badge-grupo-activo" id="badge-grupo-activo">Todos los grupos</span>
+                </div>
+
+                <div class="lista-modulos" id="lista-competencias-docente">
+                    <div class="item-modulo" data-competencia="lectura crítica">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Lectura Crítica</h4>
+                                <p class="desc-materia">Comprensión y análisis de textos</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-modulo" data-competencia="matemáticas">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Matemáticas</h4>
+                                <p class="desc-materia">Razonamiento cuantitativo y lógico</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-modulo" data-competencia="sociales y ciudadanas">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Sociales y Ciudadanas</h4>
+                                <p class="desc-materia">Contexto histórico y participación</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-modulo" data-competencia="ciencias naturales">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Ciencias Naturales</h4>
+                                <p class="desc-materia">Fenómenos naturales y evidencia</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-modulo" data-competencia="inglés">
+                        <div class="info-modulo">
+                            <div class="icono-materia-temp"></div>
+                            <div class="textos-materia">
+                                <h4 class="nombre-materia">Inglés</h4>
+                                <p class="desc-materia">Lectura y comprensión en contexto</p>
+                            </div>
+                            <span class="porcentaje-materia">0%</span>
+                        </div>
+                        <div class="barra-fondo">
+                            <div class="barra-llena" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa de Calor Conceptual (TutorIA) -->
+            <div class="tarjeta-modulos tarjeta-mapa-calor" id="seccion-mapa-calor">
+                <div class="cabecera-modulos">
+                    <div>
+                        <h3 class="titulo-modulos">Mapa de Calor — Distractores Frecuentes</h3>
+                        <p class="subtitulo-modulo-sec">Preguntas con mayor tasa de fallo detectadas por TutorIA</p>
+                    </div>
+                </div>
+
+                <div class="lista-alertas-calor" id="lista-mapa-calor">
+                    <p class="texto-vacio">Cargando análisis de errores del grupo...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Columna Derecha (Lateral) -->
+        <aside class="columna-lateral">
+            <div class="tarjeta-lateral">
+                <h3 class="titulo-lateral">Seguimiento de Estudiantes</h3>
+                <p class="subtitulo-lateral">Desempeño y estudiantes por salón</p>
+
+                <div class="lista-items-lateral" id="lista-grupos-docente">
+                    <p class="texto-vacio">Cargando grupos...</p>
+                </div>
+            </div>
+
+            <div class="tarjeta-lateral">
+                <h3 class="titulo-lateral">Talleres y Simulacros</h3>
+                <p class="subtitulo-lateral">Consulta el estado de las evaluaciones</p>
+
+                <div class="lista-items-lateral" id="lista-talleres-docente">
+                    <p class="texto-vacio">Cargando evaluaciones...</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="pie-pagina">
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">PROYECTO ACADÉMICO</span>
+            <p class="texto-footer">Ingeniería de Software II</p>
+            <p class="texto-footer">Universidad Antonio Nariño</p>
+        </div>
+
+        <div class="bloque-footer centrado">
+            <span class="etiqueta-footer">DESARROLLADO POR</span>
+            <p class="texto-footer">Jhon Alexander Pérez Llerena</p>
+            <p class="texto-footer">Samuel Thomas Monroy Pérez</p>
+            <p class="texto-footer">Andrés Felipe Paez Díaz</p>
+            <p class="texto-footer">Jeison Stiven Niño Rojas</p>
+            <p class="texto-footer resaltado">2026</p>
+        </div>
+
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">DOCENTE</span>
+            <p class="texto-footer">Julián Alberto Prado Sánchez</p>
+        </div>
+    </footer>
+
+    <!-- Modal Habilitar Evaluación (Diagnóstico o Simulacro General) -->
+    <div class="fondo-modal-docente oculto" id="modal-crear-evaluacion">
+        <div class="caja-modal-docente">
+            <div class="cabecera-modal-docente">
+                <div>
+                    <h3 class="titulo-modal-docente">Habilitar Nueva Evaluación</h3>
+                    <p class="subtitulo-modal-docente">Asigna una prueba diagnóstica o un simulacro general a tu grupo</p>
+                </div>
+                <button type="button" class="btn-cerrar-modal-docente" id="btn-cerrar-modal-eval">✕</button>
+            </div>
+
+            <form id="form-crear-evaluacion" class="form-modal-docente">
+                <div class="campo-form-docente">
+                    <label for="eval-team-id">Grupo destino</label>
+                    <select id="eval-team-id" required></select>
+                </div>
+
+                <div class="campo-form-docente">
+                    <label for="eval-tipo">Modalidad de evaluación</label>
+                    <select id="eval-tipo" required>
+                        <option value="diagnostico">Prueba Diagnóstica (1 Área • Con TutorIA)</option>
+                        <option value="simulacro_general">Simulacro General (5 Áreas • Sin IA)</option>
+                    </select>
+                </div>
+
+                <div class="campo-form-docente" id="grupo-eval-competencia">
+                    <label for="eval-competencia">Competencia a diagnosticar</label>
+                    <select id="eval-competencia">
+                        <option value="1">Lectura Crítica</option>
+                        <option value="2">Matemáticas</option>
+                        <option value="3">Sociales y Ciudadanas</option>
+                        <option value="4">Ciencias Naturales</option>
+                        <option value="5">Inglés</option>
+                    </select>
+                </div>
+
+                <div class="fila-doble-docente">
+                    <div class="campo-form-docente">
+                        <label>Nombre oficial de la evaluación</label>
+                        <div class="valor-titulo-auto" id="eval-titulo-preview">Diagnóstico Saber 11° — Lectura Crítica</div>
+                    </div>
+                    <div class="campo-form-docente campo-corto">
+                        <label for="eval-duracion">Duración (min)</label>
+                        <input type="number" id="eval-duracion" min="5" max="240" value="30" required>
+                    </div>
+                </div>
+
+                <div class="caja-resumen-eval" id="eval-resumen-banco">
+                    Se tomarán 2 preguntas de <strong>Lectura Crítica</strong> del banco y se habilitará <strong>TutorIA</strong>.
+                </div>
+
+                <p class="mensaje-estado-eval oculto" id="eval-mensaje-estado"></p>
+
+                <div class="acciones-modal-docente">
+                    <button type="button" class="btn-secundario" id="btn-cancelar-eval">Cancelar</button>
+                    <button type="submit" class="btn-primario" id="btn-publicar-eval">Publicar y Asignar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/dashboard-docente.js"></script>
+    <script src="../js/perfil-modal.js"></script>
+    <script src="../js/notificaciones.js"></script>
+</body>
+</html>

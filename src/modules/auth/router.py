@@ -27,7 +27,12 @@ class UsuarioRegistro(BaseModel):
 class RecuperarPassword(BaseModel):
     correo: EmailStr
 
+class VerificarTokenRecuperacion(BaseModel):
+    correo: EmailStr
+    token: str
+
 class RestablecerPassword(BaseModel):
+    correo: EmailStr | None = None
     token: str
     nueva_password: str
 
@@ -56,7 +61,6 @@ def _enviar_correo_recuperacion(destinatario: str, nombre: str, token: str) -> b
         print(f"[AVISO SMTP] Credenciales no configuradas en .env. Token para {destinatario}: {token}")
         return False
 
-    enlace = f"{frontend_url}/views/restablecer.html?token={token}"
     msg = EmailMessage()
     msg["Subject"] = "Recuperación de contraseña - Plataforma ICFES IA"
     msg["From"] = remitente
@@ -64,9 +68,8 @@ def _enviar_correo_recuperacion(destinatario: str, nombre: str, token: str) -> b
     msg.set_content(
         f"Hola {nombre},\n\n"
         f"Recibimos una solicitud para restablecer tu contraseña.\n"
-        f"Usa el siguiente token o ingresa al enlace para crear una nueva clave:\n\n"
-        f"Token: {token}\n"
-        f"Enlace: {enlace}\n\n"
+        f"Copia el siguiente código de verificación y pégalo en la ventana de recuperación:\n\n"
+        f"Código / Token: {token}\n\n"
         f"Si no solicitaste este cambio, ignora este mensaje."
     )
 
@@ -106,11 +109,19 @@ def iniciar_sesion(credenciales: UsuarioLogin):
         # Puente hacia la tabla 'alumn' si el rol es estudiante
         alumn_id = None
         grado_actual = "11"
+        telefono_actual = ""
+        direccion_actual = ""
         if usuario_db.get("role") in ["student", "estudiante"]:
-            alumn_id = resolver_alumn_id(usuario_db.get("id"))
-            res_alumn = supabase.table("alumn").select("grade").eq("id", alumn_id).execute()
-            if res_alumn.data and res_alumn.data[0].get("grade"):
-                grado_actual = res_alumn.data[0]["grade"]
+            try:
+                alumn_id = resolver_alumn_id(usuario_db.get("id"))
+                res_alum = supabase.table("alumn").select("grade, phone, address").eq("id", alumn_id).execute()
+                if res_alum.data:
+                    if res_alum.data[0].get("grade"):
+                        grado_actual = res_alum.data[0]["grade"]
+                    telefono_actual = res_alum.data[0].get("phone") or ""
+                    direccion_actual = res_alum.data[0].get("address") or ""
+            except Exception as alumn_err:
+                print(f"AVISO RLS ALUMN: {repr(alumn_err)}")
 
         return {
             "estado": "éxito",
@@ -122,7 +133,9 @@ def iniciar_sesion(credenciales: UsuarioLogin):
                 "nombre": usuario_db.get("name", "Estudiante"),
                 "correo": usuario_db.get("email"),
                 "rol": usuario_db.get("role", "student"),
-                "grado": grado_actual
+                "grado": grado_actual,
+                "telefono": telefono_actual,
+                "direccion": direccion_actual
             }
         }
 
@@ -203,10 +216,10 @@ def solicitar_recuperacion(datos: RecuperarPassword):
     try:
         res = supabase.table("users").select("id, name").eq("email", datos.correo).execute()
         if not res.data:
-            return {
-                "estado": "éxito",
-                "mensaje": "Si el correo está registrado, recibirás las instrucciones de recuperación."
-            }
+            raise HTTPException(
+                status_code=404,
+                detail="El correo ingresado no está registrado en el sistema. Verifica que esté bien escrito o contacta al administrador."
+            )
 
         usuario = res.data[0]
         token_recuperacion = secrets.token_urlsafe(24)
@@ -214,19 +227,53 @@ def solicitar_recuperacion(datos: RecuperarPassword):
         supabase.table("users").update({"reset_token": token_recuperacion}).eq("id", usuario["id"]).execute()
         correo_enviado = _enviar_correo_recuperacion(datos.correo, usuario.get("name", "Usuario"), token_recuperacion)
 
+        es_correo_prueba = datos.correo.lower().endswith("@colegio.edu.co")
+
         respuesta = {
             "estado": "éxito",
             "mensaje": "Si el correo está registrado, recibirás las instrucciones de recuperación.",
             "correo_enviado": correo_enviado
         }
-        if not correo_enviado:
+        if not correo_enviado or es_correo_prueba:
             respuesta["debug_token"] = token_recuperacion
 
         return respuesta
 
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         print(f"DEBUG ERROR RECUPERACIÓN: {repr(e)}")
         raise HTTPException(status_code=500, detail="Error interno al procesar la solicitud.")
+
+
+@router.post("/verificar-token")
+def verificar_token_recuperacion(datos: VerificarTokenRecuperacion):
+    try:
+        res = (
+            supabase.table("users")
+            .select("id, reset_token")
+            .eq("email", datos.correo)
+            .execute()
+        )
+        if not res.data:
+            raise HTTPException(status_code=404, detail="El correo ingresado no está registrado.")
+
+        token_guardado = res.data[0].get("reset_token")
+        if not token_guardado or token_guardado != datos.token.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="El código de verificación es incorrecto o ya expiró."
+            )
+
+        return {
+            "estado": "éxito",
+            "mensaje": "Código verificado correctamente."
+        }
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        print(f"DEBUG ERROR VERIFICAR TOKEN: {repr(e)}")
+        raise HTTPException(status_code=500, detail="Error interno al verificar el código.")
 
 
 @router.post("/restablecer-password")
@@ -235,7 +282,11 @@ def restablecer_password(datos: RestablecerPassword):
         if len(datos.nueva_password.strip()) < 6:
             raise HTTPException(status_code=400, detail="La nueva contraseña debe tener al menos 6 caracteres.")
 
-        res = supabase.table("users").select("id").eq("reset_token", datos.token.strip()).execute()
+        query = supabase.table("users").select("id").eq("reset_token", datos.token.strip())
+        if datos.correo:
+            query = query.eq("email", datos.correo)
+
+        res = query.execute()
         if not res.data:
             raise HTTPException(status_code=400, detail="El token de recuperación es inválido o ya fue utilizado.")
 
@@ -256,7 +307,6 @@ def restablecer_password(datos: RestablecerPassword):
         print(f"DEBUG ERROR RESTABLECER: {repr(e)}")
         raise HTTPException(status_code=500, detail="Error al restablecer la contraseña.")
 
-
 # --- HU-04: Gestión de Perfil de Usuario ---
 @router.put("/perfil/{user_id}", dependencies=[Depends(verificar_token)])
 def actualizar_perfil(user_id: int, datos: ActualizarPerfil):
@@ -271,15 +321,20 @@ def actualizar_perfil(user_id: int, datos: ActualizarPerfil):
         if res_user.data[0].get("role") in ["student", "estudiante"]:
             alumn_id = resolver_alumn_id(user_id)
             campos_alumn = {}
-            if datos.grado is not None:
-                campos_alumn["grade"] = datos.grado.strip()
             if datos.telefono is not None:
-                campos_alumn["phone"] = datos.telefono.strip()
+                tel_limpio = datos.telefono.replace(" ", "").replace("-", "").strip()
+                if tel_limpio and not (
+                    tel_limpio.isdigit()
+                    and len(tel_limpio) == 10
+                    and (tel_limpio.startswith("3") or tel_limpio.startswith("60"))
+                ):
+                    raise HTTPException(
+                        status_code=400,
+                        detail="El teléfono debe tener 10 dígitos válidos (ej. 3001234567 o 6012345678)."
+                    )
+                campos_alumn["phone"] = tel_limpio
             if datos.direccion is not None:
                 campos_alumn["address"] = datos.direccion.strip()
-
-            if campos_alumn:
-                supabase.table("alumn").update(campos_alumn).eq("id", alumn_id).execute()
 
         return {
             "estado": "éxito",
@@ -301,7 +356,7 @@ def listar_estudiantes_docente(teacher_id: int):
             return {"estado": "éxito", "grupos": []}
 
         team_ids = [t["id"] for t in res_teams.data]
-        res_links = supabase.table("alumn_team").select("team_id, alumn_id").in_("team_id", team_ids).execute()
+        res_links = supabase.table("alum_team").select("team_id, alumn_id").in_("team_id", team_ids).execute()
 
         alumn_ids = list({link["alumn_id"] for link in res_links.data})
         alumns_map = {}

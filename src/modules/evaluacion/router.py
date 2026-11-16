@@ -267,7 +267,7 @@ def listar_talleres_estudiante(id_estudiante: int):
     try:
         alumn_id_real = resolver_alumn_id(id_estudiante)
 
-        res_teams = supabase.table("alumn_team").select("team_id").eq("alumn_id", alumn_id_real).execute()
+        res_teams = supabase.table("alum_team").select("team_id").eq("alumn_id", alumn_id_real).execute()
         team_ids = [item["team_id"] for item in res_teams.data]
         if not team_ids:
             return {
@@ -382,7 +382,7 @@ def procesar_entrega(entrega: EntregaTaller):
         res_pregs = supabase.table("question").select("id, statement, competence_id").in_("id", ids_preguntas).execute()
         pregs_map = {p["id"]: p for p in res_pregs.data}
 
-        res_ws = supabase.table("workshop").select("competence_id, topic").eq("id", entrega.id_workshop).execute()
+        res_ws = supabase.table("workshop").select("competence_id, topic, modalidad").eq("id", entrega.id_workshop).execute()
         ws_info = res_ws.data[0] if res_ws.data else {}
         default_comp_id = ws_info.get("competence_id")
 
@@ -418,7 +418,12 @@ def procesar_entrega(entrega: EntregaTaller):
 
         # Generar diagnóstico general para submission.ai_feedback
         ai_feedback = "¡Excelente trabajo! Respondiste correctamente todas las preguntas del intento."
-        if errores_para_ia:
+        es_simulacro_general = (
+            ws_info.get("modalidad") == "simulacro"
+            and not ws_info.get("competence_id")
+            and "diagnost" not in ws_info.get("topic", "").lower()
+        )
+        if errores_para_ia and not es_simulacro_general:
             try:
                 resumen_errores = "\n".join(errores_para_ia[:5])
                 prompt_general = (
@@ -426,7 +431,7 @@ def procesar_entrega(entrega: EntregaTaller):
                     f"Falló en:\n{resumen_errores}\n"
                     f"Redacta una retroalimentación general motivadora en máximo 3 líneas indicando qué habilidad debe reforzar, sin dar las respuestas literales."
                 )
-                ia_resp = client.models.generate_content(model="gemini-1.5-flash", contents=prompt_general)
+                ia_resp = client.models.generate_content(model="gemini-3.5-flash", contents=prompt_general)
                 ai_feedback = ia_resp.text.strip()
             except Exception as ia_err:
                 print(f"DEBUG AVISO AI FEEDBACK: {repr(ia_err)}")
@@ -529,3 +534,53 @@ def revisar_intento_finalizado(submission_id: int):
     except Exception as e:
         print(f"DEBUG ERROR REVISION INTENTO: {repr(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/docente/{teacher_id}/contexto-creacion")
+def obtener_contexto_creacion_docente(teacher_id: int):
+    try:
+        teams_res = (
+            supabase.table("team")
+            .select("id, name, grade")
+            .eq("teacher_id", teacher_id)
+            .eq("is_active", True)
+            .execute()
+        )
+        grupos = teams_res.data or []
+
+        all_teams = supabase.table("team").select("id, grade").execute().data or []
+        grade_por_team = {t["id"]: t.get("grade") for t in all_teams}
+
+        workshops = supabase.table("workshop").select("id, team_id").execute().data or []
+        grade_por_ws = {w["id"]: grade_por_team.get(w.get("team_id")) for w in workshops}
+
+        preguntas_raw = (
+            supabase.table("question")
+            .select("id, workshop_id, statement, competence_id, is_active")
+            .eq("is_active", True)
+            .execute()
+            .data or []
+        )
+        opciones_raw = supabase.table("question_option").select("*").execute().data or []
+
+        opciones_por_preg = {}
+        for op in opciones_raw:
+            qid = op.get("question_id")
+            opciones_por_preg.setdefault(qid, []).append({
+                "texto": op.get("option_text"),
+                "es_correcta": bool(op.get("is_correct")),
+                "causa_error": op.get("error_reason")
+            })
+
+        preguntas = []
+        for q in preguntas_raw:
+            preguntas.append({
+                "id": q["id"],
+                "enunciado": q["statement"],
+                "competence_id": q.get("competence_id"),
+                "grade": grade_por_ws.get(q.get("workshop_id")),
+                "opciones": opciones_por_preg.get(q["id"], [])
+            })
+
+        return {"estado": "éxito", "grupos": grupos, "preguntas": preguntas}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error cargando contexto del docente: {str(e)}")

@@ -37,13 +37,28 @@
 
         <!-- Notificaciones y Perfil -->
         <div class="zona-perfil">
-            <div class="icono-campana-temp"></div>
-            <div class="info-usuario">
-                <div class="avatar-temp">E</div>
+            <button type="button" id="boton-notificaciones" class="btn-notificaciones" title="Notificaciones">
+                <img src="../assets/icono-notificaciones.svg" alt="Notificaciones" width="22" height="22">
+                <span id="badge-notificaciones" class="badge-notificaciones oculto">0</span>
+            </button>
+            <div class="info-usuario" id="boton-perfil" title="Opciones de cuenta">
+                <div class="avatar-temp" id="avatar-inicial">E</div>
                 <div class="textos-usuario">
-                    <span class="nombre-usuario">Estudiante</span>
-                    <span class="grado-usuario">Grado 9/11°</span>
+                    <span class="nombre-usuario" id="nombre-perfil">Estudiante</span>
+                    <span class="grado-usuario" id="grado-perfil">Grado 11°</span>
                 </div>
+            </div>
+
+            <!-- Menú desplegable -->
+            <div class="menu-desplegable-perfil oculto" id="menu-perfil">
+                <div class="cabecera-menu-perfil">
+                    <span class="rol-menu-perfil" id="rol-perfil">Rol: Estudiante</span>
+                    <span class="correo-menu-perfil" id="correo-perfil">correo@colegio.edu.co</span>
+                </div>
+                <hr class="divisor-menu-perfil">
+                <button type="button" class="opcion-cerrar-sesion" id="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
             </div>
         </div>
     </header>
@@ -54,14 +69,12 @@
             
             <!-- Tarjeta de Bienvenida -->
             <div class="tarjeta-bienvenida">
-                <div class="textos-bienvenida">
-                    <h2 class="titulo-bienvenida">¡Hola Estudiante!</h2>
-                    <p class="subtitulo-bienvenida">Tu meta comienza aquí. Revisa tu progreso</p>
-                </div>
+                <h1 class="titulo-bienvenida">¡Hola, Estudiante!</h1>
+                <p class="subtitulo-bienvenida">Tu meta comienza aquí. Revisa tu progreso</p>
                 <div class="botones-bienvenida">
-                    <button class="btn-primario">Iniciar Simulacro</button>
-                    <button class="btn-secundario">Ver Plan de Estudio</button>
-
+                    <button type="button" class="btn-primario" id="btn-iniciar-simulacro" disabled>
+                        No hay simulacros pendientes
+                    </button>
                 </div>
             </div>
 
@@ -297,5 +310,9 @@
         </div>
 
     </footer>
+    <script src="../js/dashboard-estudiante.js"></script>
+    <script src="../js/perfil-modal.js"></script>
+    <script src="../js/notificaciones.js"></script>
+    <script src="../js/plan-estudio.js"></script>
 </body>
 </html>

@@ -103,6 +103,98 @@
 
     </main>
 
+    <!-- Modal de Recuperación y Restablecimiento de Contraseña (3 Pasos) -->
+    <div id="modal-recuperar" class="fondo-modal oculto">
+        <div class="caja-modal-recuperar">
+            <div class="cabecera-modal">
+                <div>
+                    <h3 class="titulo-modal">Recuperar contraseña</h3>
+                    <p class="subtitulo-modal" id="subtitulo-modal-recuperar">
+                        Paso 1 de 3: Verifica tu correo institucional
+                    </p>
+                </div>
+                <button type="button" id="btn-cerrar-recuperar" class="btn-cerrar-modal">✕</button>
+            </div>
+
+            <!-- Alerta de estado dentro del modal -->
+            <div id="alerta-modal-recuperar" class="alerta-modal oculto"></div>
+
+            <!-- PANTALLA 1 Y 2: Correo + Despliegue dinámico del Token -->
+            <form id="form-solicitar-token" class="formulario-modal">
+                <div class="grupo-campo">
+                    <label for="correo-recuperacion" class="etiqueta-campo">Correo institucional registrado</label>
+                    <input
+                        type="email"
+                        id="correo-recuperacion"
+                        class="campo-entrada"
+                        placeholder="Ej. alumno@colegio.edu.co"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="btn-enviar-token" class="boton-ingresar">
+                    Solicitar código de recuperación
+                </button>
+
+                <!-- Bloque dinámico: solo aparece cuando el correo existe -->
+                <div id="bloque-token-dinamico" class="bloque-token-dinamico oculto">
+                    <div id="caja-token-local" class="caja-info-token oculto"></div>
+
+                    <div class="grupo-campo">
+                        <label for="token-recuperacion" class="etiqueta-campo">Código / Token de verificación</label>
+                        <input
+                            type="text"
+                            id="token-recuperacion"
+                            class="campo-entrada"
+                            placeholder="Pega aquí el código recibido"
+                        >
+                    </div>
+
+                    <button type="button" id="btn-verificar-token" class="boton-ingresar">
+                        Verificar código
+                    </button>
+                </div>
+            </form>
+
+            <!-- PANTALLA 3: Creación y confirmación de nueva contraseña -->
+            <form id="form-restablecer-password" class="formulario-modal oculto">
+                <div class="badge-correo-verificado" id="badge-correo-verificado"></div>
+
+                <div class="grupo-campo">
+                    <label for="nueva-password" class="etiqueta-campo">Nueva contraseña (mínimo 6 caracteres)</label>
+                    <input
+                        type="password"
+                        id="nueva-password"
+                        class="campo-entrada"
+                        placeholder="••••••••"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="confirmar-password" class="etiqueta-campo">Confirmar nueva contraseña</label>
+                    <input
+                        type="password"
+                        id="confirmar-password"
+                        class="campo-entrada"
+                        placeholder="••••••••"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="btn-guardar-password" class="boton-ingresar">
+                    Guardar nueva contraseña
+                </button>
+
+                <button type="button" id="btn-volver-paso1" class="btn-enlace-secundario">
+                    ← Volver a verificación de correo
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/login.js"></script>
 
 </body>

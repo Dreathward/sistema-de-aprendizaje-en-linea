@@ -1,0 +1,588 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: lightgray;
+    color: black;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.oculto {
+    display: none !important;
+}
+
+/* Barra superior (idéntica al Dashboard Estudiante) */
+.barra-superior {
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 40px;
+    border-bottom: 1px solid silver;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.zona-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icono-logo-temp {
+    width: 36px;
+    height: 36px;
+    background-color: navy;
+    border-radius: 8px;
+}
+
+.titulo-logo {
+    font-size: 16px;
+    font-weight: 700;
+    color: black;
+}
+
+.subtitulo-logo {
+    font-size: 10px;
+    color: gray;
+}
+
+.zona-acciones-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.pill-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-mini {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: navy;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nombre-mini {
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+}
+
+.btn-pausar-salir {
+    background-color: white;
+    border: 1px solid navy;
+    color: navy;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-pausar-salir:hover {
+    background-color: aliceblue;
+}
+
+/* Contenedor principal */
+.contenedor-principal {
+    width: 100%;
+    padding: 30px 40px;
+    flex: 1;
+}
+
+.tarjeta-blanca {
+    background-color: white;
+    border-radius: 16px;
+}
+
+.estado-carga {
+    padding: 40px;
+    text-align: center;
+    color: dimgray;
+    font-size: 14px;
+}
+
+/* Cabecera del Simulacro y Barra de Progreso */
+.tarjeta-cabecera-prueba {
+    padding: 25px 30px;
+    margin-bottom: 25px;
+}
+
+.fila-titulo-timer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.titulo-simulacro {
+    font-size: 24px;
+    font-weight: 700;
+    color: black;
+}
+
+.subtitulo-pregunta-actual {
+    font-size: 13px;
+    color: dimgray;
+    margin-top: 4px;
+}
+
+.pill-temporizador {
+    background-color: lightgray;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pill-temporizador strong {
+    color: navy;
+    font-weight: 700;
+}
+
+.bloque-progreso {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.textos-progreso {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: dimgray;
+}
+
+.porcentaje-progreso {
+    color: navy;
+    font-weight: 700;
+}
+
+.barra-progreso-fondo {
+    width: 100%;
+    height: 8px;
+    background-color: lightgray;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.barra-progreso-relleno {
+    height: 100%;
+    background-color: navy;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* Cuadrícula 2 Columnas (Estructura Mockup + Estética Dashboard) */
+.grid-dos-columnas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: stretch;
+}
+
+.tarjeta-columna {
+    padding: 25px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cabecera-tarjeta {
+    margin-bottom: 12px;
+}
+
+.titulo-tarjeta {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+}
+
+.subtitulo-tarjeta {
+    font-size: 12px;
+    color: dimgray;
+    margin-top: 2px;
+}
+
+.divisor-sutil {
+    border: none;
+    border-top: 1px solid silver;
+    margin-bottom: 18px;
+}
+
+.cuerpo-lectura {
+    font-size: 14px;
+    line-height: 1.7;
+    color: black;
+    white-space: pre-line;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.caja-pregunta-destacada {
+    background-color: whitesmoke;
+    border: 1px solid silver;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: black;
+    margin-bottom: 18px;
+}
+
+/* Opciones A, B, C, D */
+.lista-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.opcion-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid silver;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+    color: black;
+}
+
+.opcion-item:hover {
+    border-color: navy;
+    background-color: whitesmoke;
+}
+
+.opcion-item.seleccionada {
+    border: 2px solid navy;
+    background-color: aliceblue;
+    font-weight: 600;
+}
+
+.letra-opcion {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background-color: lightsteelblue;
+    color: black;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.opcion-item.seleccionada .letra-opcion {
+    background-color: navy;
+    color: white;
+}
+
+/* Navegación Inferior */
+.barra-navegacion-inferior {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-navegacion-anterior {
+    background-color: white;
+    border: 1px solid navy;
+    color: navy;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-navegacion-anterior:hover:not(:disabled) {
+    background-color: aliceblue;
+}
+
+.btn-navegacion-anterior:disabled {
+    border-color: silver;
+    color: gray;
+    cursor: not-allowed;
+}
+
+.btn-navegacion-siguiente {
+    background-color: navy;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-navegacion-siguiente:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.btn-navegacion-siguiente.finalizar {
+    background-color: darkgreen;
+}
+
+.btn-navegacion-siguiente:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+/* Resultados post-simulacro */
+.tarjeta-resumen-nota {
+    padding: 30px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cabecera-nota {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.etiqueta-resultado {
+    font-size: 11px;
+    font-weight: 700;
+    color: navy;
+}
+
+.titulo-resultado {
+    font-size: 28px;
+    font-weight: 700;
+    color: black;
+    margin: 4px 0;
+}
+
+.detalle-aciertos {
+    font-size: 14px;
+    color: dimgray;
+}
+
+.caja-feedback-general {
+    background-color: whitesmoke;
+    border-left: 4px solid navy;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.titulo-seccion-revision {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.lista-revision {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarjeta-revision {
+    background-color: white;
+    border-left: 6px solid seagreen;
+    border-radius: 16px;
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tarjeta-revision.incorrecta {
+    border-left-color: crimson;
+}
+
+.estado-badge {
+    width: fit-content;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background-color: honeydew;
+    color: darkgreen;
+}
+
+.tarjeta-revision.incorrecta .estado-badge {
+    background-color: mistyrose;
+    color: crimson;
+}
+
+.dato-respuesta {
+    font-size: 13px;
+    color: dimgray;
+}
+
+.btn-abrir-tutor {
+    margin-top: 6px;
+    width: fit-content;
+    background-color: navy;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* MODAL TUTORIA (Estética Dashboard) */
+.fondo-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+.caja-modal-tutor {
+    background-color: white;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid silver;
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cabecera-modal-tutor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titulo-modal-con-icono {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icono-ia-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background-color: lightsteelblue;
+    color: navy;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.cabecera-modal-tutor h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: black;
+}
+
+.btn-cerrar-modal {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: dimgray;
+    cursor: pointer;
+}
+
+.badge-respuesta-incorrecta {
+    width: fit-content;
+    background-color: mistyrose;
+    color: crimson;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.cuerpo-modal-tutor {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: black;
+    background-color: whitesmoke;
+    border: 1px solid silver;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.pie-modal-tutor {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-modal-secundario {
+    background-color: white;
+    border: 1px solid navy;
+    color: navy;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-modal-primario {
+    background-color: navy;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 860px) {
+    .grid-dos-columnas {
+        grid-template-columns: 1fr;
+    }
+    .barra-superior {
+        padding: 12px 20px;
+    }
+    .contenedor-principal {
+        padding: 20px;
+    }
+}
