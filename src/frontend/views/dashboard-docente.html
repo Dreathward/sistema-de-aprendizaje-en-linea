@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/dashboard-docente.css">
+    <link rel="icon" href="data:,">
 </head>
 <body>
     <header class="barra-superior">
@@ -20,9 +21,9 @@
         </div>
 
         <nav class="zona-menu">
-            <a href="#" class="enlace-menu activo">Inicio</a>
-            <a href="#seccion-competencias" class="enlace-menu">Competencias</a>
-            <a href="#seccion-mapa-calor" class="enlace-menu">Mapa de Calor</a>
+            <a href="dashboard-docente.html" class="enlace-menu activo">Inicio</a>
+            <a href="banco-preguntas.html" class="enlace-menu">Banco de Preguntas</a>
+            <a href="mapa-calor.html" class="enlace-menu">Mapa de Calor</a>
         </nav>
 
         <div class="zona-perfil">
@@ -60,10 +61,9 @@
                     <p class="subtitulo-bienvenida">Monitorea el desempeño de tus grupos y detecta falencias conceptuales con TutorIA</p>
                 </div>
                 <div class="botones-bienvenida">
-                        <button type="button" class="btn-primario" id="btn-abrir-crear-evaluacion">+ Habilitar Evaluación</button>
-                        <button type="button" class="btn-secundario" id="btn-recargar-analiticas">Actualizar Analíticas</button>
-                        <a href="#seccion-mapa-calor" class="btn-secundario">Ver Mapa de Calor</a>
-                    </div>
+                    <button type="button" class="btn-primario" id="btn-abrir-crear-evaluacion">Habilitar Evaluación</button>
+                    <button type="button" class="btn-secundario" id="btn-recargar-analiticas">Actualizar Analíticas</button>
+                </div>
             </div>
 
             <!-- 3 Tarjetas KPI -->
@@ -180,10 +180,10 @@
             </div>
 
             <!-- Mapa de Calor Conceptual (TutorIA) -->
-            <div class="tarjeta-modulos tarjeta-mapa-calor" id="seccion-mapa-calor">
+            <div class="tarjeta-modulos tarjeta-mapa-calor">
                 <div class="cabecera-modulos">
                     <div>
-                        <h3 class="titulo-modulos">Mapa de Calor — Distractores Frecuentes</h3>
+                        <h3 class="titulo-modulos">Alertas Conceptuales – Distractores Frecuentes</h3>
                         <p class="subtitulo-modulo-sec">Preguntas con mayor tasa de fallo detectadas por TutorIA</p>
                     </div>
                 </div>

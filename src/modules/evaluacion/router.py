@@ -51,7 +51,25 @@ class TallerCrear(BaseModel):
 
 class EstadoPregunta(BaseModel):
     is_active: bool
+    
+class OpcionEditar(BaseModel):
+    id: int | None = None
+    texto: str
+    es_correcta: bool
+    causa_error: str | None = None
 
+class PreguntaEditar(BaseModel):
+    enunciado: str
+    competence_id: int
+    tipo_prueba: str = "diagnostico"
+    opciones: list[OpcionEditar]
+
+class PreguntaBancoCrear(BaseModel):
+    grade: int
+    competence_id: int
+    tipo_prueba: str = "diagnostico"
+    enunciado: str
+    opciones: list[OpcionCrear]
 
 # Creación de simulacros/talleres y banco de preguntas (Rol Docente)
 @router.post("/crear")
@@ -116,43 +134,118 @@ def crear_taller_completo(taller: TallerCrear):
 
 
 # Revisión y administración del banco de preguntas (Docente / Admin)
+def _obtener_o_crear_workshop_banco(grade: int, tipo_prueba: str) -> int:
+    teams_res = supabase.table("team").select("id, grade").eq("grade", grade).execute().data or []
+    if not teams_res:
+        raise HTTPException(status_code=404, detail=f"No existe un grupo configurado para Grado {grade}°.")
+    team_id = teams_res[0]["id"]
+
+    es_sim = tipo_prueba == "simulacro_general"
+    etiqueta = "Simulacro" if es_sim else "Diagnóstico"
+    topic_objetivo = f"Banco Base {etiqueta} Saber {grade}°"
+
+    ws_res = supabase.table("workshop").select("id, topic").eq("team_id", team_id).execute().data or []
+    for w in ws_res:
+        t_low = (w.get("topic") or "").lower()
+        if "banco base" in t_low:
+            if es_sim and "simulacro" in t_low:
+                return w["id"]
+            if not es_sim and "simulacro" not in t_low:
+                return w["id"]
+
+    nuevo_ws = supabase.table("workshop").insert({
+        "team_id": team_id,
+        "topic": topic_objetivo,
+        "modalidad": "simulacro_general" if es_sim else "entrenamiento",
+        "is_active": False
+    }).execute()
+    return nuevo_ws.data[0]["id"]
+
+
+# Revisión y administración del banco de preguntas (Docente / Admin)
 @router.get("/banco-preguntas")
-def consultar_banco_preguntas(competence_id: int | None = None, workshop_id: int | None = None):
+def consultar_banco_preguntas(
+    teacher_id: int | None = None,
+    competence_id: int | None = None,
+    grade: int | None = None,
+    tipo_prueba: str | None = None
+):
     try:
-        query = supabase.table("question").select("*")
+        teams_query = supabase.table("team").select("id, grade, teacher_id").eq("is_active", True)
+        if teacher_id is not None:
+            teams_query = teams_query.eq("teacher_id", teacher_id)
+        teams_res = teams_query.execute().data or []
+
+        grados_permitidos = {t.get("grade") for t in teams_res if t.get("grade") is not None}
+        all_teams = supabase.table("team").select("id, grade").execute().data or []
+        grade_por_team = {t["id"]: t.get("grade") for t in all_teams}
+
+        ws_res = supabase.table("workshop").select("id, team_id, topic, modalidad").execute().data or []
+        ws_map = {w["id"]: w for w in ws_res}
+
+        query = supabase.table("question").select("*").order("id")
         if competence_id is not None:
             query = query.eq("competence_id", competence_id)
-        if workshop_id is not None:
-            query = query.eq("workshop_id", workshop_id)
 
-        res_pregs = query.execute()
-        if not res_pregs.data:
-            return {"estado": "éxito", "preguntas": []}
+        res_pregs = query.execute().data or []
+        if not res_pregs:
+            return {"estado": "éxito", "grados_docente": sorted(list(grados_permitidos)), "preguntas": []}
 
-        q_ids = [p["id"] for p in res_pregs.data]
-        res_ops = supabase.table("question_option").select("*").in_("question_id", q_ids).execute()
+        pregs_filtradas = []
+        vistas = set()
+        for p in res_pregs:
+            ws = ws_map.get(p.get("workshop_id"), {})
+            topic_low = (ws.get("topic") or "").lower()
+            if "banco base" not in topic_low:
+                continue
 
+            grado_p = grade_por_team.get(ws.get("team_id"))
+            if grados_permitidos and grado_p not in grados_permitidos:
+                continue
+            if grade is not None and grado_p != grade:
+                continue
+
+            tipo_p = "simulacro_general" if ("simulacro" in topic_low or ws.get("modalidad") == "simulacro_general") else "diagnostico"
+            if tipo_prueba and tipo_p != tipo_prueba:
+                continue
+
+            clave = (grado_p, tipo_p, p.get("competence_id"), (p.get("statement") or "").strip().lower())
+            if clave in vistas:
+                continue
+            vistas.add(clave)
+            pregs_filtradas.append((p, grado_p, tipo_p))
+
+        q_ids = [p["id"] for p, _, _ in pregs_filtradas]
         ops_por_pregunta = {}
-        for op in res_ops.data:
-            ops_por_pregunta.setdefault(op["question_id"], []).append({
-                "id": op["id"],
-                "texto": op["option_text"],
-                "es_correcta": op["is_correct"],
-                "causa_error": op.get("error_reason")
-            })
+        if q_ids:
+            res_ops = supabase.table("question_option").select("*").in_("question_id", q_ids).order("id").execute().data or []
+            for op in res_ops:
+                ops_por_pregunta.setdefault(op["question_id"], []).append({
+                    "id": op["id"],
+                    "texto": op["option_text"],
+                    "es_correcta": op["is_correct"],
+                    "causa_error": op.get("error_reason")
+                })
 
-        banco = []
-        for p in res_pregs.data:
-            banco.append({
+        banco = [
+            {
                 "id": p["id"],
                 "workshop_id": p.get("workshop_id"),
+                "grade": grado_p,
+                "tipo_prueba": tipo_p,
                 "competence_id": p.get("competence_id"),
                 "enunciado": p["statement"],
-                "activa": p.get("is_active", True),
+                "activa": p.get("is_active", True) is not False,
                 "opciones": ops_por_pregunta.get(p["id"], [])
-            })
+            }
+            for p, grado_p, tipo_p in pregs_filtradas
+        ]
 
-        return {"estado": "éxito", "preguntas": banco}
+        return {
+            "estado": "éxito",
+            "grados_docente": sorted(list(grados_permitidos)),
+            "preguntas": banco
+        }
     except Exception as e:
         print(f"DEBUG ERROR BANCO PREGUNTAS: {repr(e)}")
         raise HTTPException(status_code=500, detail=f"Error al consultar el banco: {str(e)}")
@@ -168,12 +261,88 @@ def cambiar_estado_pregunta(question_id: int, estado: EstadoPregunta):
             "estado": "éxito",
             "mensaje": f"Pregunta {'activada' if estado.is_active else 'desactivada'} correctamente."
         }
-    except HTTPException as http_err:
-        raise http_err
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"DEBUG ERROR ESTADO PREGUNTA: {repr(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.put("/pregunta/{question_id}")
+def editar_pregunta_banco(question_id: int, datos: PreguntaEditar):
+    try:
+        if len(datos.opciones) < 2:
+            raise HTTPException(status_code=400, detail="La pregunta debe tener al menos 2 opciones.")
+        if not any(op.es_correcta for op in datos.opciones):
+            raise HTTPException(status_code=400, detail="Debes marcar al menos una opción como correcta.")
+
+        res_actual = supabase.table("question").select("id, workshop_id").eq("id", question_id).execute().data or []
+        if not res_actual:
+            raise HTTPException(status_code=404, detail="Pregunta no encontrada.")
+
+        ws_actual = supabase.table("workshop").select("team_id").eq("id", res_actual[0]["workshop_id"]).execute().data or []
+        team_actual = supabase.table("team").select("grade").eq("id", ws_actual[0]["team_id"]).execute().data or [] if ws_actual else []
+        grado_actual = team_actual[0]["grade"] if team_actual else 11
+        nuevo_ws_id = _obtener_o_crear_workshop_banco(grado_actual, datos.tipo_prueba)
+
+        supabase.table("question").update({
+            "workshop_id": nuevo_ws_id,
+            "statement": datos.enunciado.strip(),
+            "competence_id": datos.competence_id
+        }).eq("id", question_id).execute()
+
+        supabase.table("question_option").delete().eq("question_id", question_id).execute()
+        nuevas_ops = [
+            {
+                "question_id": question_id,
+                "option_text": op.texto.strip(),
+                "is_correct": op.es_correcta,
+                "error_reason": None if op.es_correcta else (op.causa_error.strip() if op.causa_error else "Error de interpretación del enunciado")
+            }
+            for op in datos.opciones
+        ]
+        supabase.table("question_option").insert(nuevas_ops).execute()
+
+        return {"estado": "éxito", "mensaje": "Pregunta actualizada correctamente."}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error editando pregunta: {str(e)}")
+
+
+@router.post("/banco-preguntas")
+def agregar_pregunta_banco(datos: PreguntaBancoCrear):
+    try:
+        if len(datos.opciones) < 2:
+            raise HTTPException(status_code=400, detail="La pregunta debe tener al menos 2 opciones.")
+        if not any(op.es_correcta for op in datos.opciones):
+            raise HTTPException(status_code=400, detail="Debes marcar al menos una opción como correcta.")
+
+        workshop_id = _obtener_o_crear_workshop_banco(datos.grade, datos.tipo_prueba)
+
+        res_preg = supabase.table("question").insert({
+            "workshop_id": workshop_id,
+            "statement": datos.enunciado.strip(),
+            "competence_id": datos.competence_id,
+            "is_active": True
+        }).execute()
+        question_id = res_preg.data[0]["id"]
+
+        opciones_db = [
+            {
+                "question_id": question_id,
+                "option_text": op.texto.strip(),
+                "is_correct": op.es_correcta,
+                "error_reason": None if op.es_correcta else (op.causa_error.strip() if op.causa_error else "Error de interpretación del enunciado")
+            }
+            for op in datos.opciones
+        ]
+        supabase.table("question_option").insert(opciones_db).execute()
+
+        return {"estado": "éxito", "mensaje": "Pregunta agregada al banco.", "question_id": question_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error agregando pregunta al banco: {str(e)}")
 
 # Modo Entrenamiento Libre (Preguntas aleatorias sin tiempo límite)
 @router.get("/entrenamiento/{competence_id}")
@@ -550,8 +719,15 @@ def obtener_contexto_creacion_docente(teacher_id: int):
         all_teams = supabase.table("team").select("id, grade").execute().data or []
         grade_por_team = {t["id"]: t.get("grade") for t in all_teams}
 
-        workshops = supabase.table("workshop").select("id, team_id").execute().data or []
-        grade_por_ws = {w["id"]: grade_por_team.get(w.get("team_id")) for w in workshops}
+        workshops = supabase.table("workshop").select("id, team_id, topic, modalidad").execute().data or []
+        ws_base_info = {}
+        for w in workshops:
+            t_low = (w.get("topic") or "").lower()
+            if "banco base" in t_low:
+                ws_base_info[w["id"]] = {
+                    "grade": grade_por_team.get(w.get("team_id")),
+                    "tipo_prueba": "simulacro_general" if ("simulacro" in t_low or w.get("modalidad") == "simulacro_general") else "diagnostico"
+                }
 
         preguntas_raw = (
             supabase.table("question")
@@ -574,8 +750,13 @@ def obtener_contexto_creacion_docente(teacher_id: int):
         preguntas = []
         vistas = set()
         for q in preguntas_raw:
-            grado_q = grade_por_ws.get(q.get("workshop_id"))
-            clave_unica = (grado_q, q.get("competence_id"), (q.get("statement") or "").strip().lower())
+            wid = q.get("workshop_id")
+            if wid not in ws_base_info:
+                continue
+            info_ws = ws_base_info[wid]
+            grado_q = info_ws["grade"]
+            tipo_q = info_ws["tipo_prueba"]
+            clave_unica = (grado_q, tipo_q, q.get("competence_id"), (q.get("statement") or "").strip().lower())
             if clave_unica in vistas:
                 continue
             vistas.add(clave_unica)
@@ -584,6 +765,7 @@ def obtener_contexto_creacion_docente(teacher_id: int):
                 "enunciado": q["statement"],
                 "competence_id": q.get("competence_id"),
                 "grade": grado_q,
+                "tipo_prueba": tipo_q,
                 "opciones": opciones_por_preg.get(q["id"], [])
             })
 

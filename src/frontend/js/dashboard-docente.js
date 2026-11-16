@@ -352,21 +352,30 @@ function configurarModalCrearEvaluacion() {
 
         try {
             const grado = obtenerGradoSeleccionado();
-            const preguntasGrado = (contextoCache.preguntas || []).filter(p => Number(p.grade) === grado);
             const esDiagnostico = selectTipo.value === 'diagnostico';
+            const tipoObjetivo = esDiagnostico ? 'diagnostico' : 'simulacro_general';
+
+            const preguntasDelGrado = (contextoCache.preguntas || []).filter(p => Number(p.grade) === grado);
+            let preguntasFiltradasPorUso = preguntasDelGrado.filter(p => (p.tipo_prueba || 'diagnostico') === tipoObjetivo);
+
+            // Respaldo por si aún no hay preguntas marcadas específicamente para simulacro_general
+            if (preguntasFiltradasPorUso.length === 0) {
+                preguntasFiltradasPorUso = preguntasDelGrado;
+            }
+
             let preguntasElegidas = [];
 
             if (esDiagnostico) {
                 const compId = Number(selectComp.value);
-                preguntasElegidas = preguntasGrado.filter(p => Number(p.competence_id) === compId).slice(0, 2);
+                preguntasElegidas = preguntasFiltradasPorUso.filter(p => Number(p.competence_id) === compId).slice(0, 2);
                 if (preguntasElegidas.length === 0) {
-                    throw new Error(`No hay preguntas de Saber ${grado}° para ${nombresAreas[selectComp.value]}.`);
+                    throw new Error(`No hay preguntas diagnósticas de Saber ${grado}° para ${nombresAreas[selectComp.value]}.`);
                 }
             } else {
                 for (let c = 1; c <= 5; c++) {
-                    const delArea = preguntasGrado.filter(p => Number(p.competence_id) === c).slice(0, 2);
+                    const delArea = preguntasFiltradasPorUso.filter(p => Number(p.competence_id) === c).slice(0, 2);
                     if (delArea.length < 2) {
-                        throw new Error(`Faltan preguntas de Saber ${grado}° en ${nombresAreas[String(c)]} (se requieren 2 por área).`);
+                        throw new Error(`Faltan preguntas de Simulacro Saber ${grado}° en ${nombresAreas[String(c)]} (se requieren 2 por área).`);
                     }
                     preguntasElegidas.push(...delArea);
                 }

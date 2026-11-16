@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Preguntas - Sistema de Aprendizaje Virtual</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard-docente.css">
+</head>
+<body>
+    <header class="barra-superior">
+        <div class="zona-logo">
+            <div class="icono-logo-temp"></div>
+            <div class="textos-logo">
+                <h1 class="titulo-logo">Saber 9/11</h1>
+                <p class="subtitulo-logo">Plataforma de preparación ICFES</p>
+            </div>
+        </div>
+
+        <nav class="zona-menu">
+            <a href="dashboard-docente.html" class="enlace-menu">Inicio</a>
+            <a href="banco-preguntas.html" class="enlace-menu activo">Banco de Preguntas</a>
+            <a href="mapa-calor.html" class="enlace-menu">Mapa de Calor</a>
+        </nav>
+
+        <div class="zona-perfil">
+            <button type="button" id="boton-notificaciones" class="btn-notificaciones" title="Notificaciones">
+                <img src="../assets/icono-notificaciones.svg" alt="Notificaciones" width="22" height="22">
+                <span id="badge-notificaciones" class="badge-notificaciones oculto">0</span>
+            </button>
+            <div class="info-usuario" id="boton-perfil">
+                <div class="avatar-temp" id="avatar-inicial">D</div>
+                <div class="textos-usuario">
+                    <span class="nombre-usuario" id="nombre-perfil">Docente</span>
+                    <span class="grado-usuario" id="rol-header">Docente ICFES</span>
+                </div>
+            </div>
+
+            <div class="menu-desplegable-perfil oculto" id="menu-perfil">
+                <div class="cabecera-menu-perfil">
+                    <span class="rol-menu-perfil" id="rol-perfil">Cuenta Docente</span>
+                    <span class="correo-menu-perfil" id="correo-perfil">profe@colegio.edu.co</span>
+                </div>
+                <hr class="divisor-menu-perfil">
+                <button type="button" class="opcion-cerrar-sesion" id="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor-vista-ancha">
+        <!-- Encabezado de la vista -->
+        <section class="tarjeta-bienvenida">
+            <div class="textos-bienvenida">
+                <h2 class="titulo-bienvenida">Banco de Preguntas ICFES</h2>
+                <p class="subtitulo-bienvenida">Administra, edita, activa/desactiva y crea ítems evaluativos exclusivos para tu nivel asignado</p>
+            </div>
+            <div class="botones-bienvenida">
+                <span class="badge-banco badge-nivel-grande" id="badge-grado-docente">Nivel asignado: Saber 11°</span>
+                <button type="button" class="btn-primario" id="btn-nueva-pregunta-banco">Nueva Pregunta</button>
+            </div>
+        </section>
+
+        <!-- Formulario amplio para crear o editar pregunta -->
+        <section class="tarjeta-modulos oculto" id="seccion-form-banco">
+            <form id="form-pregunta-banco" class="form-pregunta-banco-amplio">
+                <input type="hidden" id="banco-preg-id" value="">
+                <div class="cabecera-modal-docente">
+                    <h3 class="titulo-modulos" id="titulo-form-banco">Nueva Pregunta en el Banco</h3>
+                    <button type="button" class="btn-cerrar-modal-docente" id="btn-cerrar-form-banco">✕</button>
+                </div>
+
+                <div class="fila-doble-docente">
+                    <div class="campo-form-docente">
+                        <label for="banco-preg-tipo">Uso en evaluación</label>
+                        <select id="banco-preg-tipo" required>
+                            <option value="diagnostico">Prueba Diagnóstica (Con TutorIA)</option>
+                            <option value="simulacro_general">Simulacro General (Sin IA)</option>
+                        </select>
+                    </div>
+                    <div class="campo-form-docente">
+                        <label for="banco-preg-comp">Competencia</label>
+                        <select id="banco-preg-comp" required>
+                            <option value="1">Lectura Crítica</option>
+                            <option value="2">Matemáticas</option>
+                            <option value="3">Sociales y Ciudadanas</option>
+                            <option value="4">Ciencias Naturales</option>
+                            <option value="5">Inglés</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="campo-form-docente">
+                    <label for="banco-preg-enunciado">Enunciado y contexto de la pregunta</label>
+                    <textarea id="banco-preg-enunciado" rows="4" placeholder="Escribe el contexto y la pregunta..." required></textarea>
+                </div>
+
+                <div class="grid-opciones-banco">
+                    <div class="fila-opcion-banco">
+                        <label><input type="radio" name="opcion-correcta-banco" value="0" checked> Correcta (A)</label>
+                        <input type="text" class="input-op-texto" placeholder="Texto opción A" required>
+                        <input type="text" class="input-op-error" placeholder="Hipótesis de error si falla (opcional)">
+                    </div>
+                    <div class="fila-opcion-banco">
+                        <label><input type="radio" name="opcion-correcta-banco" value="1"> Correcta (B)</label>
+                        <input type="text" class="input-op-texto" placeholder="Texto opción B" required>
+                        <input type="text" class="input-op-error" placeholder="Hipótesis de error si falla (opcional)">
+                    </div>
+                    <div class="fila-opcion-banco">
+                        <label><input type="radio" name="opcion-correcta-banco" value="2"> Correcta (C)</label>
+                        <input type="text" class="input-op-texto" placeholder="Texto opción C" required>
+                        <input type="text" class="input-op-error" placeholder="Hipótesis de error si falla (opcional)">
+                    </div>
+                    <div class="fila-opcion-banco">
+                        <label><input type="radio" name="opcion-correcta-banco" value="3"> Correcta (D)</label>
+                        <input type="text" class="input-op-texto" placeholder="Texto opción D" required>
+                        <input type="text" class="input-op-error" placeholder="Hipótesis de error si falla (opcional)">
+                    </div>
+                </div>
+
+                <p class="mensaje-estado-eval oculto" id="banco-form-estado"></p>
+
+                <div class="acciones-modal-docente">
+                    <button type="button" class="btn-secundario" id="btn-cancelar-form-banco">Cancelar</button>
+                    <button type="submit" class="btn-primario" id="btn-guardar-pregunta-banco">Guardar Pregunta</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Barra de filtros y buscador -->
+        <section class="tarjeta-modulos">
+            <div class="barra-filtros-vista-banco">
+                <input type="text" id="buscador-banco-texto" class="input-buscador-banco" placeholder="Buscar pregunta por palabra clave en el enunciado...">
+                <select id="filtro-banco-tipo">
+                    <option value="">Todos los usos</option>
+                    <option value="diagnostico">Diagnóstico (Con TutorIA)</option>
+                    <option value="simulacro_general">Simulacro General (Sin IA)</option>
+                </select>
+                <select id="filtro-banco-competencia">
+                    <option value="">Todas las competencias</option>
+                    <option value="1">Lectura Crítica</option>
+                    <option value="2">Matemáticas</option>
+                    <option value="3">Sociales y Ciudadanas</option>
+                    <option value="4">Ciencias Naturales</option>
+                    <option value="5">Inglés</option>
+                </select>
+                <span class="contador-preguntas-banco" id="contador-preguntas-banco">0 preguntas</span>
+            </div>
+
+            <div class="lista-preguntas-pantalla-completa" id="lista-preguntas-banco">
+                <p class="texto-vacio">Cargando banco de preguntas...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie-pagina">
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">PROYECTO ACADÉMICO</span>
+            <p class="texto-footer">Ingeniería de Software II</p>
+            <p class="texto-footer">Universidad Antonio Nariño</p>
+        </div>
+
+        <div class="bloque-footer centrado">
+            <span class="etiqueta-footer">DESARROLLADO POR</span>
+            <p class="texto-footer">Jhon Alexander Pérez Llerena</p>
+            <p class="texto-footer">Samuel Thomas Monroy Pérez</p>
+            <p class="texto-footer">Andrés Felipe Paez Díaz</p>
+            <p class="texto-footer">Jeison Stiven Niño Rojas</p>
+            <p class="texto-footer resaltado">2026</p>
+        </div>
+
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">DOCENTE</span>
+            <p class="texto-footer">Julián Alberto Prado Sánchez</p>
+        </div>
+    </footer>
+
+    <script src="../js/banco-preguntas.js"></script>
+    <script src="../js/perfil-modal.js"></script>
+    <script src="../js/notificaciones.js"></script>
+</body>
+</html>

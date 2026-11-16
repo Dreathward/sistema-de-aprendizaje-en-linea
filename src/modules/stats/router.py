@@ -18,6 +18,83 @@ def _clasificar_nivel_icfes(promedio: float) -> str:
         return "Básico"
     return "Bajo (Requiere refuerzo)"
 
+def _calcular_global_icfes_ultimo_simulacro(entregas: list, workshops_map: dict, comp_names_map: dict) -> dict:
+    simulacros_generales = []
+    for sub in entregas:
+        ws = workshops_map.get(sub.get("workshop_id"), {})
+        modalidad = (ws.get("modalidad") or "").lower().strip()
+        tema = (ws.get("topic") or "").lower().strip()
+        es_diag = (
+            modalidad in ("entrenamiento", "diagnostico", "diagnóstico")
+            or bool(ws.get("competence_id"))
+            or "diagnostico" in tema
+            or "diagnóstico" in tema
+        )
+        if not es_diag:
+            simulacros_generales.append(sub)
+
+    if not simulacros_generales:
+        return {
+            "tiene_simulacro": False,
+            "puntaje_500": None,
+            "nivel_icfes": "Sin simulacro general",
+            "percentil_estimado": None
+        }
+
+    # Tomar el último Simulacro General presentado (ordenado por fecha o ID)
+    ultimo = sorted(
+        simulacros_generales,
+        key=lambda s: (str(s.get("submitted_at") or s.get("created_at") or ""), int(s.get("id") or 0)),
+        reverse=True
+    )[0]
+
+    scores_ultimo = _calcular_scores_por_competencia([ultimo], workshops_map, comp_names_map)
+    score_respaldo = float(ultimo.get("score") or 0.0)
+
+    # Ponderación oficial ICFES: Lectura (3), Matemáticas (3), Sociales (3), Ciencias (3), Inglés (1) = 13
+    pesos = [
+        ("lectura", 3),
+        ("matematic", 3),
+        ("social", 3),
+        ("ciencia", 3),
+        ("ingles", 1),
+    ]
+
+    suma_ponderada = 0.0
+    for clave, peso in pesos:
+        valor_area = None
+        for nombre_comp, vals in scores_ultimo.items():
+            norm = nombre_comp.lower().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+            if clave in norm or (clave == "matematic" and "cuantitativo" in norm) or (clave == "social" and "ciudadana" in norm):
+                valor_area = sum(vals) / len(vals) if vals else score_respaldo
+                break
+        if valor_area is None:
+            valor_area = score_respaldo
+        suma_ponderada += valor_area * peso
+
+    puntaje_500 = int(round((suma_ponderada / 13.0) * 5.0))
+    puntaje_500 = max(0, min(500, puntaje_500))
+
+    if puntaje_500 >= 400:
+        nivel = "Avanzado"
+        percentil = 95
+    elif puntaje_500 >= 325:
+        nivel = "Satisfactorio"
+        percentil = 78
+    elif puntaje_500 >= 250:
+        nivel = "Mínimo"
+        percentil = 52
+    else:
+        nivel = "Insuficiente"
+        percentil = 25
+
+    return {
+        "tiene_simulacro": True,
+        "puntaje_500": puntaje_500,
+        "nivel_icfes": nivel,
+        "percentil_estimado": percentil
+    }
+
 def _calcular_scores_por_competencia(entregas: list, ws_map: dict, comp_names_map: dict) -> dict:
     sub_ids = [s["id"] for s in entregas if s.get("id")]
     ans_por_sub = {}
@@ -105,7 +182,11 @@ def obtener_metricas_estudiante(id_estudiante: int, competence_id: int | None = 
                 "resumen": {
                     "promedio_general": 0.0,
                     "simulacros_completados": 0,
-                    "mejor_puntaje": 0.0
+                    "mejor_puntaje": 0.0,
+                    "puntaje_icfes_500": None,
+                    "tiene_simulacro_general": False,
+                    "nivel_proyectado": "Sin simulacro general",
+                    "percentil_estimado": None
                 },
                 "promedio_por_competencia": [],
                 "historial": []
@@ -162,13 +243,18 @@ def obtener_metricas_estudiante(id_estudiante: int, competence_id: int | None = 
             for comp, vals in scores_por_comp.items()
         ]
 
+        global_icfes = _calcular_global_icfes_ultimo_simulacro(entregas, workshops_map, comp_names_map)
+
         return {
             "estado": "éxito",
             "resumen": {
                 "promedio_general": round(promedio, 2),
                 "simulacros_completados": total,
                 "mejor_puntaje": round(mejor, 2),
-                "nivel_proyectado": _clasificar_nivel_icfes(promedio)
+                "puntaje_icfes_500": global_icfes["puntaje_500"],
+                "tiene_simulacro_general": global_icfes["tiene_simulacro"],
+                "nivel_proyectado": global_icfes["nivel_icfes"],
+                "percentil_estimado": global_icfes["percentil_estimado"]
             },
             "promedio_por_competencia": promedio_por_competencia,
             "historial": historial
@@ -541,3 +627,116 @@ def obtener_asistencia_taller(workshop_id: int):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error consultando asistencia del taller: {str(e)}")
+
+@router.get("/docente/{teacher_id}/matriz-calor")
+def obtener_matriz_calor_docente(teacher_id: int, team_id: int | None = None):
+    try:
+        teams_query = supabase.table("team").select("id, name, grade").eq("teacher_id", teacher_id).eq("is_active", True)
+        if team_id is not None:
+            teams_query = teams_query.eq("id", team_id)
+        teams = teams_query.execute().data or []
+        if not teams:
+            return {"estado": "éxito", "competencias": [], "filas": []}
+
+        team_ids = [t["id"] for t in teams]
+        team_info = {t["id"]: f"{t['name']} ({t.get('grade', '')}°)" for t in teams}
+
+        # Estudiantes vinculados a los grupos del docente
+        links = supabase.table("alum_team").select("alumn_id, team_id").in_("team_id", team_ids).execute().data or []
+        alum_ids = list({l["alumn_id"] for l in links})
+        grupo_por_alum = {l["alumn_id"]: team_info.get(l["team_id"], "") for l in links}
+
+        if not alum_ids:
+            return {"estado": "éxito", "competencias": [], "filas": []}
+
+        alumns = supabase.table("alumn").select("id, user_id").in_("id", alum_ids).execute().data or []
+        user_ids = [a["user_id"] for a in alumns if a.get("user_id")]
+        users = supabase.table("users").select("id, name").in_("id", user_ids).execute().data or [] if user_ids else []
+        names_by_user = {u["id"]: u["name"] for u in users}
+        nombre_por_alum = {a["id"]: names_by_user.get(a.get("user_id"), f"Estudiante #{a['id']}") for a in alumns}
+
+        # Competencias oficiales ordenadas
+        comps = supabase.table("competence").select("id, name").order("id").execute().data or []
+        comp_ids = [c["id"] for c in comps]
+
+        # Talleres activos del grupo (excluyendo el Banco Base)
+        ws_res = supabase.table("workshop").select("id, team_id, competence_id, topic, is_active").in_("team_id", team_ids).execute().data or []
+        ws_map = {
+            w["id"]: w
+            for w in ws_res
+            if w.get("is_active") is not False and "banco base" not in (w.get("topic") or "").lower()
+        }
+        ws_ids = list(ws_map.keys())
+
+        # Conteo de aciertos y totales por (alum_id, competence_id)
+        conteo = {aid: {cid: {"ok": 0, "total": 0} for cid in comp_ids} for aid in alum_ids}
+
+        if ws_ids:
+            subs = supabase.table("submission").select("id, alumn_id, workshop_id").in_("workshop_id", ws_ids).in_("alumn_id", alum_ids).execute().data or []
+            sub_map = {s["id"]: s for s in subs}
+            sub_ids = list(sub_map.keys())
+
+            if sub_ids:
+                ans_res = supabase.table("student_answer").select("submission_id, question_id, selected_answer").in_("submission_id", sub_ids).execute().data or []
+                q_ids = list({a["question_id"] for a in ans_res if a.get("question_id")})
+
+                pregs = supabase.table("question").select("id, competence_id").in_("id", q_ids).execute().data or [] if q_ids else []
+                comp_por_preg = {p["id"]: p.get("competence_id") for p in pregs}
+
+                ops = supabase.table("question_option").select("question_id, option_text").eq("is_correct", True).in_("question_id", q_ids).execute().data or [] if q_ids else []
+                correcta_por_preg = {o["question_id"]: (o.get("option_text") or "").strip() for o in ops}
+
+                for a in ans_res:
+                    sub = sub_map.get(a.get("submission_id"))
+                    if not sub:
+                        continue
+                    aid = sub["alumn_id"]
+                    qid = a.get("question_id")
+                    ws = ws_map.get(sub.get("workshop_id"), {})
+                    cid = comp_por_preg.get(qid) or ws.get("competence_id")
+                    if aid not in conteo or cid not in conteo[aid]:
+                        continue
+
+                    conteo[aid][cid]["total"] += 1
+                    marcada = (a.get("selected_answer") or "").strip()
+                    if marcada and marcada == correcta_por_preg.get(qid, ""):
+                        conteo[aid][cid]["ok"] += 1
+
+        filas = []
+        for aid in sorted(alum_ids, key=lambda x: nombre_por_alum.get(x, "")):
+            celdas = []
+            suma_prom = 0
+            areas_evaluadas = 0
+            for c in comps:
+                cid = c["id"]
+                info = conteo[aid][cid]
+                if info["total"] > 0:
+                    pct = round((info["ok"] / info["total"]) * 100)
+                    suma_prom += pct
+                    areas_evaluadas += 1
+                else:
+                    pct = None
+                celdas.append({
+                    "competence_id": cid,
+                    "competencia": c["name"],
+                    "porcentaje": pct,
+                    "aciertos": info["ok"],
+                    "total": info["total"]
+                })
+            promedio_general = round(suma_prom / areas_evaluadas) if areas_evaluadas > 0 else None
+            filas.append({
+                "alum_id": aid,
+                "estudiante": nombre_por_alum.get(aid, f"Estudiante #{aid}"),
+                "grupo": grupo_por_alum.get(aid, ""),
+                "promedio_general": promedio_general,
+                "celdas": celdas
+            })
+
+        return {
+            "estado": "éxito",
+            "competencias": [{"id": c["id"], "name": c["name"]} for c in comps],
+            "filas": filas
+        }
+    except Exception as e:
+        print(f"DEBUG ERROR MATRIZ CALOR: {repr(e)}")
+        raise HTTPException(status_code=500, detail=f"Error generando matriz de calor: {str(e)}")

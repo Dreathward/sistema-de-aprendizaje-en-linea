@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Calor - Sistema de Aprendizaje Virtual</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard-docente.css">
+</head>
+<body>
+    <header class="barra-superior">
+        <div class="zona-logo">
+            <div class="icono-logo-temp"></div>
+            <div class="textos-logo">
+                <h1 class="titulo-logo">Saber 9/11</h1>
+                <p class="subtitulo-logo">Plataforma de preparación ICFES</p>
+            </div>
+        </div>
+
+        <nav class="zona-menu">
+            <a href="dashboard-docente.html" class="enlace-menu">Inicio</a>
+            <a href="banco-preguntas.html" class="enlace-menu">Banco de Preguntas</a>
+            <a href="mapa-calor.html" class="enlace-menu activo">Mapa de Calor</a>
+        </nav>
+
+        <div class="zona-perfil">
+            <button type="button" id="boton-notificaciones" class="btn-notificaciones" title="Notificaciones">
+                <img src="../assets/icono-notificaciones.svg" alt="Notificaciones" width="22" height="22">
+                <span id="badge-notificaciones" class="badge-notificaciones oculto">0</span>
+            </button>
+            <div class="info-usuario" id="boton-perfil">
+                <div class="avatar-temp" id="avatar-inicial">D</div>
+                <div class="textos-usuario">
+                    <span class="nombre-usuario" id="nombre-perfil">Docente</span>
+                    <span class="grado-usuario" id="rol-header">Docente ICFES</span>
+                </div>
+            </div>
+
+            <div class="menu-desplegable-perfil oculto" id="menu-perfil">
+                <div class="cabecera-menu-perfil">
+                    <span class="rol-menu-perfil" id="rol-perfil">Cuenta Docente</span>
+                    <span class="correo-menu-perfil" id="correo-perfil">profe@colegio.edu.co</span>
+                </div>
+                <hr class="divisor-menu-perfil">
+                <button type="button" class="opcion-cerrar-sesion" id="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor-vista-ancha">
+        <section class="tarjeta-bienvenida">
+            <div class="textos-bienvenida">
+                <h2 class="titulo-bienvenida">Mapa de Calor – Rendimiento por Estudiante y Competencia</h2>
+                <p class="subtitulo-bienvenida">Diagnóstico matricial de aciertos por área evaluada para identificar fortalezas y brechas individuales</p>
+            </div>
+            <div class="leyenda-mapa-calor">
+                <span class="pill-leyenda calor-alto">≥ 75% Óptimo</span>
+                <span class="pill-leyenda calor-medio">50–74% En proceso</span>
+                <span class="pill-leyenda calor-bajo">&lt; 50% Crítico</span>
+                <span class="pill-leyenda calor-vacio">Sin evaluar</span>
+            </div>
+        </section>
+
+        <section class="tarjeta-modulos">
+            <div class="barra-filtros-vista-banco">
+                <input type="text" id="buscador-estudiante-calor" class="input-buscador-banco" placeholder="Buscar estudiante por nombre o grupo...">
+                <select id="filtro-grupo-calor">
+                    <option value="">Todos los grupos</option>
+                </select>
+                <button type="button" class="btn-secundario" id="btn-recargar-matriz">Actualizar Matriz</button>
+                <span class="contador-preguntas-banco" id="contador-estudiantes-calor">0 estudiantes</span>
+            </div>
+
+            <div class="contenedor-tabla-calor" id="contenedor-matriz-calor">
+                <p class="texto-vacio">Cargando matriz de rendimiento...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie-pagina">
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">PROYECTO ACADÉMICO</span>
+            <p class="texto-footer">Ingeniería de Software II</p>
+            <p class="texto-footer">Universidad Antonio Nariño</p>
+        </div>
+
+        <div class="bloque-footer centrado">
+            <span class="etiqueta-footer">DESARROLLADO POR</span>
+            <p class="texto-footer">Jhon Alexander Pérez Llerena</p>
+            <p class="texto-footer">Samuel Thomas Monroy Pérez</p>
+            <p class="texto-footer">Andrés Felipe Paez Díaz</p>
+            <p class="texto-footer">Jeison Stiven Niño Rojas</p>
+            <p class="texto-footer resaltado">2026</p>
+        </div>
+
+        <div class="bloque-footer">
+            <span class="etiqueta-footer">DOCENTE</span>
+            <p class="texto-footer">Julián Alberto Prado Sánchez</p>
+        </div>
+    </footer>
+
+    <script src="../js/mapa-calor.js"></script>
+    <script src="../js/perfil-modal.js"></script>
+    <script src="../js/notificaciones.js"></script>
+</body>
+</html>

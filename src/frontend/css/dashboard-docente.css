@@ -833,3 +833,367 @@ body {
     color: firebrick;
     border: 1px solid peachpuff;
 }
+/* Modal Gestor del Banco de Preguntas */
+.caja-modal-banco {
+    max-width: 880px;
+    width: 94%;
+    max-height: 90vh;
+}
+
+.barra-filtros-banco {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.barra-filtros-banco select {
+    padding: 8px 12px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    font-size: 13px;
+    background-color: white;
+}
+
+.form-pregunta-banco {
+    background-color: whitesmoke;
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.titulo-form-banco {
+    font-size: 14px;
+    font-weight: 700;
+    color: navy;
+}
+
+.form-pregunta-banco textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.grid-opciones-banco {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fila-opcion-banco {
+    display: grid;
+    grid-template-columns: 115px 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.fila-opcion-banco label {
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.fila-opcion-banco input[type="text"] {
+    padding: 7px 9px;
+    border: 1px solid gainsboro;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.lista-banco-scroll {
+    max-height: 56vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+.tarjeta-pregunta-banco {
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 12px 14px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tarjeta-pregunta-banco.inactiva {
+    opacity: 0.6;
+    background-color: whitesmoke;
+}
+
+.cabecera-pregunta-banco {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badges-pregunta-banco {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.badge-banco {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background-color: aliceblue;
+    color: navy;
+}
+
+.enunciado-pregunta-banco {
+    font-size: 13px;
+    color: black;
+    line-height: 1.4;
+}
+
+.opciones-mini-banco {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+    font-size: 12px;
+    color: dimgray;
+}
+
+.opciones-mini-banco .op-ok {
+    color: darkgreen;
+    font-weight: 600;
+}
+
+.acciones-pregunta-banco {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-mini-banco {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid gainsboro;
+    background-color: white;
+    cursor: pointer;
+}
+
+.btn-mini-banco:hover {
+    background-color: whitesmoke;
+}
+
+/* Cursor tipo mano en todos los botones secundarios y acciones */
+.btn-secundario,
+.btn-primario,
+.btn-cerrar-modal-docente,
+.btn-mini-banco,
+.enlace-menu {
+    cursor: pointer;
+}
+
+/* Estilos vista dedicada Banco de Preguntas */
+.contenedor-vista-ancha {
+    max-width: 1180px;
+    margin: 28px auto;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 16px; 
+    flex-wrap: wrap;
+}
+
+.badge-nivel-grande {
+    font-size: 13px;
+    padding: 8px 14px;
+}
+
+.form-pregunta-banco-amplio {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-pregunta-banco-amplio textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.barra-filtros-vista-banco {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.input-buscador-banco {
+    flex: 1;
+    min-width: 240px;
+    padding: 9px 12px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.barra-filtros-vista-banco select {
+    padding: 9px 12px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    background-color: white;
+}
+
+.contador-preguntas-banco {
+    font-size: 12px;
+    font-weight: 700;
+    color: navy;
+    padding: 6px 12px;
+    background-color: aliceblue;
+    border-radius: 999px;
+}
+
+.lista-preguntas-pantalla-completa {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Mantener el footer siempre pegado al fondo de la pantalla */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor-dashboard,
+.contenedor-vista-ancha {
+    flex: 1;
+    width: 100%;
+}
+
+.pie-pagina {
+    margin-top: auto;
+}
+
+/* Matriz Visual Mapa de Calor (Estudiantes x Competencias) */
+.leyenda-mapa-calor {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.pill-leyenda {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.contenedor-tabla-calor {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.tabla-matriz-calor {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px;
+    font-size: 13px;
+}
+
+.tabla-matriz-calor th {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: navy;
+    padding: 8px 10px;
+    background-color: aliceblue;
+    border-radius: 8px;
+}
+
+.tabla-matriz-calor th.col-estudiante {
+    text-align: left;
+    min-width: 170px;
+}
+
+.celda-estudiante-calor {
+    background-color: whitesmoke;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: black;
+}
+
+.celda-estudiante-calor span {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: dimgray;
+}
+
+.celda-valor-calor {
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 90px;
+}
+
+.celda-valor-calor small {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.calor-alto {
+    background-color: honeydew;
+    color: darkgreen;
+    border: 1px solid palegreen;
+}
+
+.calor-medio {
+    background-color: cornsilk;
+    color: darkgoldenrod;
+    border: 1px solid khaki;
+}
+
+.calor-bajo {
+    background-color: mistyrose;
+    color: firebrick;
+    border: 1px solid lightpink;
+}
+
+.calor-vacio {
+    background-color: whitesmoke;
+    color: gray;
+    border: 1px solid gainsboro;
+}

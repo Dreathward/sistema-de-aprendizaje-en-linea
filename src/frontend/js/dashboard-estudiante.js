@@ -112,18 +112,23 @@ async function cargarEstadisticasYProgreso() {
         const detallePuntaje = document.querySelector('.metrica-detalle.positivo');
 
         if (tarjetasValor[0]) {
-            tarjetasValor[0].textContent = `${resumen.promedio_general || 0}/100`;
+            tarjetasValor[0].textContent = resumen.tiene_simulacro_general && resumen.puntaje_icfes_500 !== null
+                ? `${resumen.puntaje_icfes_500}/500`
+                : '—/500';
         }
         if (detallePuntaje) {
-            detallePuntaje.textContent = resumen.nivel_proyectado
-                ? `Nivel: ${resumen.nivel_proyectado}`
-                : 'Sin evaluaciones aún';
+            if (resumen.tiene_simulacro_general && resumen.puntaje_icfes_500 !== null) {
+                const percTxt = resumen.percentil_estimado ? ` • Percentil ~${resumen.percentil_estimado}%` : '';
+                detallePuntaje.textContent = `Nivel: ${resumen.nivel_proyectado}${percTxt}`;
+            } else {
+                detallePuntaje.textContent = 'Presenta un Simulacro General';
+            }
         }
         if (tarjetasValor[1]) {
-            tarjetasValor[1].textContent = `${resumen.simulacros_completados || 0} realizados`;
+            tarjetasValor[1].textContent = `${resumen.simulacros_completados || 0} realizadas`;
         }
         if (tarjetasValor[2]) {
-            tarjetasValor[2].textContent = `${resumen.mejor_puntaje || 0} pts mejor nota`;
+            tarjetasValor[2].textContent = `${resumen.mejor_puntaje || 0}/100 mejor nota`;
         }
 
         // Animar barras por competencia (incluye diagnósticos y simulacros generales)
