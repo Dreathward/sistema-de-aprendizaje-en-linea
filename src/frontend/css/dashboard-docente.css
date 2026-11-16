@@ -725,3 +725,111 @@ body {
     color: navy;
     background-color: whitesmoke;
 }
+
+/* Modal Control de Asistencia por Taller */
+.caja-modal-asistencia {
+    max-width: 580px;
+}
+
+.resumen-asistencia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.kpi-asistencia {
+    background-color: whitesmoke;
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.kpi-asistencia.kpi-ok {
+    background-color: honeydew;
+    border-color: palegreen;
+}
+
+.kpi-asistencia.kpi-pendiente {
+    background-color: seashell;
+    border-color: peachpuff;
+}
+
+.kpi-asistencia-valor {
+    font-size: 20px;
+    font-weight: 700;
+    color: black;
+}
+
+.kpi-asistencia-label {
+    font-size: 11px;
+    color: dimgray;
+    font-weight: 600;
+}
+
+.lista-asistencia-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-right: 4px;
+}
+
+.grupo-asistencia-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: navy;
+    margin-bottom: 6px;
+}
+
+.fila-estudiante-asistencia {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid gainsboro;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background-color: white;
+}
+
+.info-est-asistencia {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nombre-est-asistencia {
+    font-size: 13px;
+    font-weight: 600;
+    color: black;
+}
+
+.correo-est-asistencia {
+    font-size: 11px;
+    color: dimgray;
+}
+
+.badge-asistencia-ok {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: honeydew;
+    color: darkgreen;
+    border: 1px solid palegreen;
+}
+
+.badge-asistencia-pendiente {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: seashell;
+    color: firebrick;
+    border: 1px solid peachpuff;
+}

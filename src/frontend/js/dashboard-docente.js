@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     configurarMenuPerfil();
     cargarPanelDocente();
     configurarModalCrearEvaluacion();
+    configurarModalAsistenciaTaller();
 
     document.getElementById('btn-recargar-analiticas')?.addEventListener('click', () => {
         cargarPanelDocente();
@@ -248,7 +249,6 @@ function clasificarNivel(promedio) {
     return 'Bajo (Requiere refuerzo)';
 }
 
-// 5. MODAL PARA CREAR Y ASIGNAR EVALUACIONES (DIAGNÓSTICO O SIMULACRO GENERAL)
 // 5. MODAL PARA CREAR Y ASIGNAR EVALUACIONES (SABER 9° / SABER 11°)
 function configurarModalCrearEvaluacion() {
     const modal = document.getElementById('modal-crear-evaluacion');
@@ -414,6 +414,126 @@ function configurarModalCrearEvaluacion() {
         } finally {
             btnPublicar.disabled = false;
             btnPublicar.textContent = 'Publicar y Asignar';
+        }
+    });
+}
+
+// 6. MODAL CONTROL DE ASISTENCIA Y ENTREGAS POR EVALUACIÓN
+function configurarModalAsistenciaTaller() {
+    const modal = document.getElementById('modal-asistencia-taller');
+    const btnCerrarX = document.getElementById('btn-cerrar-modal-asistencia');
+    const btnCerrarFooter = document.getElementById('btn-cerrar-asistencia-footer');
+    const tituloEl = document.getElementById('asistencia-titulo-taller');
+    const subtituloEl = document.getElementById('asistencia-subtitulo-taller');
+    const totalGrupoEl = document.getElementById('asistencia-total-grupo');
+    const totalPresEl = document.getElementById('asistencia-total-presentaron');
+    const totalPendEl = document.getElementById('asistencia-total-pendientes');
+    const contenidoEl = document.getElementById('asistencia-contenido-listas');
+
+    if (!modal) return;
+
+    const cerrar = () => modal.classList.add('oculto');
+    btnCerrarX?.addEventListener('click', cerrar);
+    btnCerrarFooter?.addEventListener('click', cerrar);
+
+    const tarjetas = Array.from(document.querySelectorAll('.tarjeta-lateral'));
+    const tarjetaTalleres = tarjetas.find(t =>
+        (t.textContent || '').toLowerCase().includes('talleres y simulacros')
+    );
+
+    if (!tarjetaTalleres) return;
+
+    // Resaltar visualmente las filas de evaluaciones como clicables
+    const marcarClicables = () => {
+        tarjetaTalleres.querySelectorAll('div').forEach(el => {
+            if (el.textContent.includes('Modalidad:')) {
+                el.style.cursor = 'pointer';
+                el.title = 'Clic para ver asistencia y entregas';
+            }
+        });
+    };
+    new MutationObserver(marcarClicables).observe(tarjetaTalleres, { childList: true, subtree: true });
+    marcarClicables();
+
+    tarjetaTalleres.addEventListener('click', async (e) => {
+        const tarjetaItem = e.target.closest('div');
+        if (!tarjetaItem || !tarjetaItem.textContent.includes('Modalidad:')) return;
+
+        // Subir al contenedor directo del item de evaluación si se hizo clic en un hijo
+        let contenedorItem = tarjetaItem;
+        while (contenedorItem.parentElement && !contenedorItem.parentElement.classList.contains('tarjeta-lateral') && contenedorItem.parentElement.textContent.includes('Modalidad:')) {
+            const padre = contenedorItem.parentElement;
+            if ((padre.textContent.match(/Modalidad:/g) || []).length > 1) break;
+            contenedorItem = padre;
+        }
+
+        const primeraLinea = (contenedorItem.innerText || '')
+            .split('\n')
+            .map(l => l.trim())
+            .find(l => l.length > 0 && !l.startsWith('Modalidad:'));
+
+        if (!primeraLinea) return;
+
+        tituloEl.textContent = primeraLinea;
+        subtituloEl.textContent = 'Consultando entregas del grupo...';
+        contenidoEl.innerHTML = '<p class="subtitulo-modal-docente">Cargando listado de asistencia...</p>';
+        modal.classList.remove('oculto');
+
+        try {
+            const reporte = await fetchAutenticado(`/stats/docente/${usuario.id}/rendimiento`);
+            const pruebas = reporte?.resumen_pruebas || [];
+            const tallerMatch = pruebas.find(p => (p.tema || '').trim() === primeraLinea);
+
+            if (!tallerMatch) {
+                throw new Error('No se encontró el identificador de esta evaluación.');
+            }
+
+            const asist = await fetchAutenticado(`/stats/taller/${tallerMatch.workshop_id}/asistencia`);
+            if (!asist || asist.estado !== 'éxito') {
+                throw new Error('No se pudo cargar la asistencia de la prueba.');
+            }
+
+            subtituloEl.textContent = `Modalidad: ${asist.taller.modalidad === 'entrenamiento' ? 'Prueba Diagnóstica' : 'Simulacro General'}`;
+            totalGrupoEl.textContent = asist.total_grupo;
+            totalPresEl.textContent = asist.total_presentaron;
+            totalPendEl.textContent = asist.total_pendientes;
+
+            const htmlPresentaron = asist.presentaron.length === 0
+                ? '<p class="correo-est-asistencia">Ningún estudiante ha presentado esta prueba todavía.</p>'
+                : asist.presentaron.map(est => `
+                    <div class="fila-estudiante-asistencia">
+                        <div class="info-est-asistencia">
+                            <span class="nombre-est-asistencia">${est.nombre}</span>
+                            <span class="correo-est-asistencia">${est.correo}</span>
+                        </div>
+                        <span class="badge-asistencia-ok">Presentó • ${est.puntaje}/100</span>
+                    </div>
+                `).join('');
+
+            const htmlPendientes = asist.pendientes.length === 0
+                ? '<p class="correo-est-asistencia">Todos los estudiantes del grupo ya completaron esta evaluación.</p>'
+                : asist.pendientes.map(est => `
+                    <div class="fila-estudiante-asistencia">
+                        <div class="info-est-asistencia">
+                            <span class="nombre-est-asistencia">${est.nombre}</span>
+                            <span class="correo-est-asistencia">${est.correo}</span>
+                        </div>
+                        <span class="badge-asistencia-pendiente">Pendiente</span>
+                    </div>
+                `).join('');
+
+            contenidoEl.innerHTML = `
+                <div>
+                    <div class="grupo-asistencia-titulo">Ya presentaron (${asist.total_presentaron})</div>
+                    ${htmlPresentaron}
+                </div>
+                <div>
+                    <div class="grupo-asistencia-titulo">Faltan por presentar (${asist.total_pendientes})</div>
+                    ${htmlPendientes}
+                </div>
+            `;
+        } catch (err) {
+            contenidoEl.innerHTML = `<p class="mensaje-estado-eval">${err.message}</p>`;
         }
     });
 }

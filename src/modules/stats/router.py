@@ -211,9 +211,13 @@ def obtener_reporte_docente(teacher_id: int, team_id: int | None = Query(default
                 res_users = supabase.table("users").select("id, name, email").in_("id", user_ids).execute()
                 users_map = {u["id"]: u for u in res_users.data}
 
-        # Talleres y entregas del grupo
+        # Talleres y entregas del grupo (excluyendo el contenedor interno del banco)
         res_ws = supabase.table("workshop").select("*").in_("team_id", team_ids).execute()
-        ws_map = {w["id"]: w for w in res_ws.data}
+        ws_map = {
+            w["id"]: w
+            for w in (res_ws.data or [])
+            if w.get("is_active") is not False and w.get("topic") != "Banco Base Saber 9/11"
+        }
         ws_ids = list(ws_map.keys())
 
         res_comps = supabase.table("competence").select("id, name").execute()
@@ -458,3 +462,82 @@ def obtener_indicadores_institucionales():
     except Exception as e:
         print(f"DEBUG ERROR INDICADORES INSTITUCIONALES: {repr(e)}")
         raise HTTPException(status_code=500, detail=f"Error al calcular indicadores institucionales: {str(e)}")
+    
+@router.get("/taller/{workshop_id}/asistencia")
+def obtener_asistencia_taller(workshop_id: int):
+    try:
+        res_ws = supabase.table("workshop").select("*").eq("id", workshop_id).execute()
+        if not res_ws.data:
+            raise HTTPException(status_code=404, detail="Evaluación no encontrada")
+        ws = res_ws.data[0]
+        team_id = ws.get("team_id")
+
+        # Estudiantes matriculados en el grupo de esa evaluación
+        res_links = supabase.table("alum_team").select("alumn_id").eq("team_id", team_id).execute()
+        alumn_ids = [l["alumn_id"] for l in (res_links.data or [])]
+
+        alumns_map = {}
+        users_map = {}
+        if alumn_ids:
+            res_alumns = supabase.table("alumn").select("id, user_id").in_("id", alumn_ids).execute()
+            alumns_map = {a["id"]: a for a in (res_alumns.data or [])}
+            user_ids = [a["user_id"] for a in (res_alumns.data or []) if a.get("user_id")]
+            if user_ids:
+                res_users = supabase.table("users").select("id, name, email, role").in_("id", user_ids).execute()
+                users_map = {u["id"]: u for u in (res_users.data or [])}
+
+        # Entregas registradas para este taller
+        res_subs = supabase.table("submission").select("*").eq("workshop_id", workshop_id).execute()
+        subs_por_alumn = {}
+        for s in (res_subs.data or []):
+            aid = s.get("alumn_id")
+            if aid not in subs_por_alumn:
+                subs_por_alumn[aid] = s
+
+        presentaron = []
+        pendientes = []
+
+        for aid in alumn_ids:
+            a_info = alumns_map.get(aid, {})
+            u_info = users_map.get(a_info.get("user_id"), {})
+            if u_info.get("role") in ("teacher", "docente", "admin"):
+                continue
+
+            base_est = {
+                "alumn_id": aid,
+                "nombre": u_info.get("name", "Estudiante"),
+                "correo": u_info.get("email", "")
+            }
+
+            if aid in subs_por_alumn:
+                sub = subs_por_alumn[aid]
+                puntaje = round(float(sub.get("score") or 0), 1)
+                presentaron.append({
+                    **base_est,
+                    "puntaje": puntaje,
+                    "aprobado": puntaje >= 60.0,
+                    "fecha": sub.get("submitted_at") or sub.get("created_at")
+                })
+            else:
+                pendientes.append(base_est)
+
+        presentaron.sort(key=lambda x: x["nombre"])
+        pendientes.sort(key=lambda x: x["nombre"])
+
+        return {
+            "estado": "éxito",
+            "taller": {
+                "id": ws["id"],
+                "tema": ws.get("topic"),
+                "modalidad": ws.get("modalidad", "simulacro")
+            },
+            "total_grupo": len(presentaron) + len(pendientes),
+            "total_presentaron": len(presentaron),
+            "total_pendientes": len(pendientes),
+            "presentaron": presentaron,
+            "pendientes": pendientes
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error consultando asistencia del taller: {str(e)}")

@@ -572,12 +572,18 @@ def obtener_contexto_creacion_docente(teacher_id: int):
             })
 
         preguntas = []
+        vistas = set()
         for q in preguntas_raw:
+            grado_q = grade_por_ws.get(q.get("workshop_id"))
+            clave_unica = (grado_q, q.get("competence_id"), (q.get("statement") or "").strip().lower())
+            if clave_unica in vistas:
+                continue
+            vistas.add(clave_unica)
             preguntas.append({
                 "id": q["id"],
                 "enunciado": q["statement"],
                 "competence_id": q.get("competence_id"),
-                "grade": grade_por_ws.get(q.get("workshop_id")),
+                "grade": grado_q,
                 "opciones": opciones_por_preg.get(q["id"], [])
             })
 

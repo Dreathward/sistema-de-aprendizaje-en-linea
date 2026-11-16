@@ -299,6 +299,42 @@
         </div>
     </div>
 
+    <!-- Modal Control de Asistencia y Entregas por Evaluación -->
+    <div class="fondo-modal-docente oculto" id="modal-asistencia-taller">
+        <div class="caja-modal-docente caja-modal-asistencia">
+            <div class="cabecera-modal-docente">
+                <div>
+                    <h3 class="titulo-modal-docente" id="asistencia-titulo-taller">Control de Asistencia</h3>
+                    <p class="subtitulo-modal-docente" id="asistencia-subtitulo-taller">Detalle de participación por estudiante</p>
+                </div>
+                <button type="button" class="btn-cerrar-modal-docente" id="btn-cerrar-modal-asistencia">✕</button>
+            </div>
+
+            <div class="resumen-asistencia-grid">
+                <div class="kpi-asistencia">
+                    <span class="kpi-asistencia-valor" id="asistencia-total-grupo">0</span>
+                    <span class="kpi-asistencia-label">Total grupo</span>
+                </div>
+                <div class="kpi-asistencia kpi-ok">
+                    <span class="kpi-asistencia-valor" id="asistencia-total-presentaron">0</span>
+                    <span class="kpi-asistencia-label">Presentaron</span>
+                </div>
+                <div class="kpi-asistencia kpi-pendiente">
+                    <span class="kpi-asistencia-valor" id="asistencia-total-pendientes">0</span>
+                    <span class="kpi-asistencia-label">Pendientes</span>
+                </div>
+            </div>
+
+            <div class="lista-asistencia-scroll" id="asistencia-contenido-listas">
+                <p class="subtitulo-modal-docente">Cargando listado de asistencia...</p>
+            </div>
+
+            <div class="acciones-modal-docente">
+                <button type="button" class="btn-primario" id="btn-cerrar-asistencia-footer">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/dashboard-docente.js"></script>
     <script src="../js/perfil-modal.js"></script>
     <script src="../js/notificaciones.js"></script>

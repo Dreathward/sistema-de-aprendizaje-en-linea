@@ -373,9 +373,17 @@ function renderizarPreguntaActual() {
         item.appendChild(spanTexto);
 
         item.addEventListener('click', () => {
+            const yaSeleccionada = respuestasSeleccionadas[preg.id] === textoOpcion;
             listaOps.querySelectorAll('.opcion-item').forEach(el => el.classList.remove('seleccionada'));
-            item.classList.add('seleccionada');
-            respuestasSeleccionadas[preg.id] = textoOpcion;
+
+            if (yaSeleccionada) {
+                delete respuestasSeleccionadas[preg.id];
+            } else {
+                item.classList.add('seleccionada');
+                respuestasSeleccionadas[preg.id] = textoOpcion;
+            }
+
+            guardarProgresoLocal();
             actualizarBarraProgreso();
         });
 
