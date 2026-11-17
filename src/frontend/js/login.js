@@ -126,12 +126,9 @@ function reiniciarModalRecuperar() {
     irAPantallaCorreoYToken();
 }
 
-function cerrarModal() {
-    modal.classList.add('oculto');
-    ocultarAlerta();
-    if (inputTelefono) inputTelefono.value = '';
-    if (inputDireccion) inputDireccion.value = '';
-    formSeguridad.reset();
+function cerrarModalRecuperar() {
+    modalRecuperar.classList.add('oculto');
+    ocultarAlertaModal();
 }
 
 enlaceAyuda?.addEventListener('click', (e) => {

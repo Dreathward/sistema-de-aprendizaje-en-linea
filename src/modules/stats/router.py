@@ -294,15 +294,23 @@ def obtener_reporte_docente(teacher_id: int, team_id: int | None = Query(default
             alumns_map = {a["id"]: a for a in res_alumns.data}
             user_ids = [a["user_id"] for a in res_alumns.data if a.get("user_id")]
             if user_ids:
-                res_users = supabase.table("users").select("id, name, email").in_("id", user_ids).execute()
+                res_users = supabase.table("users").select("id, name, email, role").in_("id", user_ids).execute()
                 users_map = {u["id"]: u for u in res_users.data}
 
         # Talleres y entregas del grupo (excluyendo el contenedor interno del banco)
+        # Línea 211: incluir 'role' en la consulta de users
+        if user_ids:
+            res_users = supabase.table("users").select("id, name, email, role").in_("id", user_ids).execute()
+            users_map = {u["id"]: u for u in res_users.data}
+
+        # Líneas 215-221: excluir cualquier taller cuya modalidad sea 'banco' o tema contenga 'banco base'
         res_ws = supabase.table("workshop").select("*").in_("team_id", team_ids).execute()
         ws_map = {
             w["id"]: w
             for w in (res_ws.data or [])
-            if w.get("is_active") is not False and w.get("topic") != "Banco Base Saber 9/11"
+            if w.get("is_active") is not False
+            and (w.get("modalidad") or "").lower().strip() != "banco"
+            and "banco base" not in (w.get("topic") or "").lower()
         }
         ws_ids = list(ws_map.keys())
 
@@ -336,6 +344,8 @@ def obtener_reporte_docente(teacher_id: int, team_id: int | None = Query(default
         for aid in alumn_ids:
             alumn_info = alumns_map.get(aid, {})
             user_info = users_map.get(alumn_info.get("user_id"), {})
+            if (user_info.get("role") or "").lower().strip() in ("teacher", "docente", "admin"):
+                continue
             notas = subs_por_alumno.get(aid, [])
             prom = round(sum(notas) / len(notas), 2) if notas else 0.0
             rendimiento_estudiantes.append({
@@ -651,20 +661,39 @@ def obtener_matriz_calor_docente(teacher_id: int, team_id: int | None = None):
 
         alumns = supabase.table("alumn").select("id, user_id").in_("id", alum_ids).execute().data or []
         user_ids = [a["user_id"] for a in alumns if a.get("user_id")]
-        users = supabase.table("users").select("id, name").in_("id", user_ids).execute().data or [] if user_ids else []
-        names_by_user = {u["id"]: u["name"] for u in users}
-        nombre_por_alum = {a["id"]: names_by_user.get(a.get("user_id"), f"Estudiante #{a['id']}") for a in alumns}
+        users = supabase.table("users").select("id, name, role").in_("id", user_ids).execute().data or [] if user_ids else []
+        users_by_id = {u["id"]: u for u in users}
+
+        alumns_estudiantes = []
+        for a in alumns:
+            uid = a.get("user_id")
+            u_info = users_by_id.get(uid, {})
+            rol = (u_info.get("role") or "").lower().strip()
+            if uid == teacher_id or rol in ("teacher", "docente", "admin"):
+                continue
+            alumns_estudiantes.append(a)
+
+        alum_ids = [a["id"] for a in alumns_estudiantes]
+        if not alum_ids:
+            return {"estado": "éxito", "competencias": [], "filas": []}
+
+        nombre_por_alum = {
+            a["id"]: users_by_id.get(a.get("user_id"), {}).get("name", f"Estudiante #{a['id']}")
+            for a in alumns_estudiantes
+        }
 
         # Competencias oficiales ordenadas
         comps = supabase.table("competence").select("id, name").order("id").execute().data or []
         comp_ids = [c["id"] for c in comps]
 
         # Talleres activos del grupo (excluyendo el Banco Base)
-        ws_res = supabase.table("workshop").select("id, team_id, competence_id, topic, is_active").in_("team_id", team_ids).execute().data or []
+        ws_res = supabase.table("workshop").select("id, team_id, competence_id, topic, modalidad, is_active").in_("team_id", team_ids).execute().data or []
         ws_map = {
             w["id"]: w
             for w in ws_res
-            if w.get("is_active") is not False and "banco base" not in (w.get("topic") or "").lower()
+            if w.get("is_active") is not False
+            and (w.get("modalidad") or "").lower().strip() != "banco"
+            and "banco base" not in (w.get("topic") or "").lower()
         }
         ws_ids = list(ws_map.keys())
 

@@ -459,8 +459,11 @@ def listar_talleres_estudiante(id_estudiante: int):
         for w in res_workshops.data:
             if w.get("is_active", True) is False:
                 continue
+            modalidad = (w.get("modalidad") or "simulacro").strip()
+            tema = (w.get("topic") or "").strip()
+            if modalidad.lower() == "banco" or "banco base" in tema.lower():
+                continue
             ya_completado = w["id"] in entregas_map
-            modalidad = w.get("modalidad", "simulacro")
             talleres_formateados.append({
                 "id": w["id"],
                 "tema": w["topic"],
